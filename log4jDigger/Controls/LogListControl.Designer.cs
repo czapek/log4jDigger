@@ -44,13 +44,14 @@
             this.jumpToNextLineInOfThreadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.labelShortInfo = new System.Windows.Forms.Label();
             this.labelLongInfo = new System.Windows.Forms.Label();
+            this.timerRepaint = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStripListView.SuspendLayout();
             this.SuspendLayout();
             // 
             // listViewLog
             // 
-            this.listViewLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.listViewLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewLog.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderTime,
@@ -151,6 +152,12 @@
             this.labelLongInfo.TabIndex = 2;
             this.labelLongInfo.Text = "label1";
             // 
+            // timerRepaint
+            // 
+            this.timerRepaint.Enabled = true;
+            this.timerRepaint.Interval = 1000;
+            this.timerRepaint.Tick += new System.EventHandler(this.timerRepaint_Tick);
+            // 
             // LogListControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -181,5 +188,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStripListView;
         private System.Windows.Forms.ToolStripMenuItem jumpToPreviousLineInOfThreadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem jumpToNextLineInOfThreadToolStripMenuItem;
+        private System.Windows.Forms.Timer timerRepaint;
     }
 }

@@ -648,5 +648,11 @@ namespace log4jDigger
             openFileDialogBasket.InitialDirectory = Path.GetDirectoryName(((String)listViewBasket.SelectedItems[0].Tag));
             AddFiles();
         }
+
+        private void listViewBasket_DoubleClick(object sender, EventArgs e)
+        {
+            if (listViewBasket.SelectedItems.Count == 1 && listViewBasket.SelectedItems[0].Checked)
+                CreateIndex();
+        }
     }
 }

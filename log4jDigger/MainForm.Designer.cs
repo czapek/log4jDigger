@@ -191,6 +191,7 @@ namespace log4jDigger
             this.listViewBasket.TabIndex = 0;
             this.listViewBasket.UseCompatibleStateImageBehavior = false;
             this.listViewBasket.View = System.Windows.Forms.View.Details;
+            this.listViewBasket.DoubleClick += new System.EventHandler(this.listViewBasket_DoubleClick);
             this.listViewBasket.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewBasket_KeyDown);
             // 
             // columnHeaderLogFile
@@ -219,7 +220,7 @@ namespace log4jDigger
             this.createIndexToolStripMenuItem,
             this.addFilesFromThisFolderToolStripMenuItem});
             this.contextMenuStripBasket.Name = "contextMenuStripBasket";
-            this.contextMenuStripBasket.Size = new System.Drawing.Size(280, 70);
+            this.contextMenuStripBasket.Size = new System.Drawing.Size(280, 48);
             // 
             // createIndexToolStripMenuItem
             // 

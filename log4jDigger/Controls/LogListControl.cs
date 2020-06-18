@@ -236,19 +236,7 @@ namespace log4jDigger.Controls
             LogPos logPos = positionList[e.ItemIndex];
             String line = LoglineObject.ReadLine(logPos);
             ListViewItem lvi = new ListViewItem();
-
-            double ageInSeconds = (DateTime.Now - logPos.TimeStamp).TotalSeconds;
-            if (ageInSeconds < 5)
-                lvi.BackColor = Color.LimeGreen;
-            else if (ageInSeconds < 60)
-                lvi.BackColor = Color.Cyan;
-            else if (ageInSeconds < 600)
-                lvi.BackColor = Color.Lavender;
-            else if (ageInSeconds < 3600)
-                lvi.BackColor = Color.LightCyan;
-            else if (ageInSeconds < 36000)
-                lvi.BackColor = Color.WhiteSmoke;
-
+            lvi.BackColor = GetAgeColor(logPos.TimeStamp);
             lvi.UseItemStyleForSubItems = false;
             LoglineObject loglineObject = LoglineObject.CreateLoglineObject(line, logPos);
             lvi.Text = loglineObject.Timestamp;
@@ -353,6 +341,67 @@ namespace log4jDigger.Controls
                         break;
                 }
                 this.Cursor = Cursors.Default;
+            }
+        }
+
+        private Color GetAgeColor(DateTime timestamp)
+        {
+            double ageInSeconds = (DateTime.Now - timestamp).TotalSeconds;
+            if (ageInSeconds < 5)
+                return Color.LimeGreen;
+            else if (ageInSeconds < 60)
+                return Color.Cyan;
+            else if (ageInSeconds < 600)
+                return Color.Lavender;
+            else if (ageInSeconds < 3600)
+                return Color.LightCyan;
+            else if (ageInSeconds < 36000)
+                return Color.WhiteSmoke;
+
+            return Color.White;
+        }
+
+        private List<Color> last100Colors = new List<Color>();
+        private void timerRepaint_Tick(object sender, EventArgs e)
+        {
+            if (positionList == null || positionList.Count == 0)
+                return;
+
+            if (positionList[positionList.Count - 1].TimeStamp < DateTime.Now.AddDays(-1))
+                return;
+
+            int refreshFrom = positionList.Count > 100 ? positionList.Count - 100 : 0;
+            if (positionList[refreshFrom].TimeStamp < DateTime.Now.AddDays(-1))
+                return;
+
+            if (last100Colors.Count != positionList.Count - refreshFrom)
+                UpdateAgeColors(refreshFrom);
+
+            for (int i = refreshFrom; i < positionList.Count; i++)
+            {
+                if (last100Colors[i - refreshFrom] != GetAgeColor(positionList[i].TimeStamp))
+                {
+                    listViewLog.RedrawItems(refreshFrom, positionList.Count - 1, false);
+                    System.Diagnostics.Debug.WriteLine("refresh age");
+                    UpdateAgeColors(refreshFrom);
+                    return;
+                }
+            }
+
+        }
+
+        private void UpdateAgeColors(int refreshFrom)
+        {
+            if (last100Colors.Count == 100 && positionList.Count - refreshFrom == 100)
+            {
+                for (int i = refreshFrom; i < positionList.Count; i++)
+                    last100Colors[i - refreshFrom] = GetAgeColor(positionList[i].TimeStamp);
+            }
+            else
+            {
+                last100Colors.Clear();
+                for (int i = refreshFrom; i < positionList.Count; i++)
+                    last100Colors.Add(GetAgeColor(positionList[i].TimeStamp));
             }
         }
     }
