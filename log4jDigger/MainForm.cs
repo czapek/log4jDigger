@@ -24,6 +24,7 @@ namespace log4jDigger
         private LoglineInfoControl infoControl;
         private StreamingFactory streamingFactory;
         private delegate void OnMessageReceivedInvoker(MessageEventArgs e);
+        private delegate void SafeAfterInConsistent();
         private System.Windows.Forms.Timer timerNewLogFilesAdded;
         private LogListControl selectedLogListControl;
         private static MainForm currentMainForm;
@@ -39,6 +40,7 @@ namespace log4jDigger
             selectedLogListControl = logListControlMain;
             this.Size = new Size(1600, 800);
             streamingFactory = new StreamingFactory();
+            streamingFactory.IsInConsistent += StreamingFactory_IsInConsistent;
             currentMainForm = this;
             workerIndex = new BackgroundWorker();
             workerIndex.WorkerReportsProgress = true;
@@ -242,18 +244,41 @@ namespace log4jDigger
             selectedLogListControl.Clear();
             if (workerIndex.IsBusy)
                 workerIndex.CancelAsync();
+
+            logListControlMain.VirtualListSize = 0;
+            foreach (TabPage tp in tabControlMain.TabPages)
+                if (tp.Name == "tabPageSearchResult")
+                    ((LogListControl)tp.Controls[0]).VirtualListSize = 0;
+
+            streamingFactory.IsInConsistent -= StreamingFactory_IsInConsistent;
             streamingFactory.Dispose();
             streamingFactory = new StreamingFactory();
+            streamingFactory.IsInConsistent += StreamingFactory_IsInConsistent;
 
             tabControlMain.TabPages.Clear();
             tabControlMain.TabPages.Add(tabPageBasket);
             tabControlMain.TabPages.Add(tabPageSearch);
         }
 
+        private void StreamingFactory_IsInConsistent(object sender, EventArgs e)
+        {
+            var d = new SafeAfterInConsistent(AfterInConsistent);
+            this.Invoke(d);
+        }
+
+        private void AfterInConsistent()
+        {
+            logListControlMain.Follow = false;
+            Clear();
+            CreateIndex();
+        }
+
         private void CreateIndex()
         {
             if (listViewBasket.CheckedItems.Count == 0)
                 return;
+
+            logListControlMain.Follow = false;
 
             List<String> fileList = new List<String>();
             foreach (ListViewItem item in listViewBasket.Items)

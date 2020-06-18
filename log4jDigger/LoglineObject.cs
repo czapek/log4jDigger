@@ -58,7 +58,7 @@ namespace log4jDigger
         }
 
         public static LoglineObject CreateLoglineObject(string line, LogPos logPos)
-        {
+        { 
             LoglineObject loglineObject = new LoglineObject() { LogPos = logPos };
             if (logPos.LoglineType == LoglineType.MAIN_LOG)
             {
@@ -182,9 +182,16 @@ namespace log4jDigger
 
         public static string ReadLine(LogPos logPos)
         {
-            logPos.StreamingHost.Reader.SetPosition(logPos.Pos);
-            String line = logPos.StreamingHost.Reader.ReadLine();
-            return line;
+            try
+            {
+                logPos.StreamingHost.Reader.SetPosition(logPos.Pos);
+                String line = logPos.StreamingHost.Reader.ReadLine();
+                return line;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public override string ToString()

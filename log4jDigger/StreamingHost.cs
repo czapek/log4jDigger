@@ -11,8 +11,9 @@ namespace log4jDigger
         public FileStream Stream;
         public StreamReader Reader;
         public String Filename;
-        private DateTime lastWriteTime;
+        private long lastFileLength;
         public long LastMaxPosition { get; private set; }
+        public LogPos LastMaxLogPosition { get; private set; }
 
         public StreamingHost(String filename)
         {
@@ -21,15 +22,16 @@ namespace log4jDigger
             Reader = new StreamReader(Stream, Encoding.Default);
         }
 
-        public void SetLastMaxPosition()
+        public void SetLastMaxPosition(LogPos logPos)
         {
+            LastMaxLogPosition = logPos;
             LastMaxPosition = Reader.GetPosition();
-            lastWriteTime = File.GetLastWriteTime(Filename);
+            lastFileLength = new FileInfo(Filename).Length; 
         }
 
-        public bool HasChanged()
-        {
-            return lastWriteTime != File.GetLastWriteTime(Filename);
+        public int HasChanged()
+        { 
+            return new FileInfo(Filename).Length.CompareTo(lastFileLength);
         }
 
         public void Dispose()

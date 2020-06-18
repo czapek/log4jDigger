@@ -13,6 +13,7 @@ namespace log4jDigger
     public class StreamingFactory : IDisposable
     {
         public event EventHandler NewPositions;
+        public event EventHandler IsInConsistent;
         private List<StreamingHost> streamingHosts = new List<StreamingHost>();
         public List<LogPos> PositionList = new List<LogPos>();
         private bool isDisposing = false;
@@ -42,7 +43,7 @@ namespace log4jDigger
 
             set
             {
-                pollTimer.Enabled = value; 
+                pollTimer.Enabled = value;
             }
         }
 
@@ -51,11 +52,22 @@ namespace log4jDigger
             if (isBusy)
                 return;
 
+            System.Diagnostics.Debug.WriteLine("Poll");
             long newPositions = 0;
             foreach (StreamingHost sh in streamingHosts)
             {
-                if (sh.HasChanged())
+                int isBigger = sh.HasChanged();
+                if (isBigger > 0)
                     newPositions += ScanFile(null, 0, sh);
+                else if (isBigger < 0)
+                {
+                    if (IsInConsistent != null)
+                        IsInConsistent.Invoke(this, EventArgs.Empty);
+
+                    EnablePolling = false;
+                    isBusy = false;
+                    return;
+                }
             }
 
             if (newPositions > 0 && NewPositions != null)
@@ -85,7 +97,7 @@ namespace log4jDigger
                 return searchResults[e];
             }
 
-            isBusy = true;    
+            isBusy = true;
             if (e.UseRegex)
             {
                 if (e.IgnoreCase)
@@ -192,7 +204,7 @@ namespace log4jDigger
             int lastRelPos = 0;
             sh.Reader.SetPosition(sh.LastMaxPosition);
             long position = sh.Reader.GetPosition();
-            LogPos lastMainLog = null;
+            LogPos lastMainLog = sh.LastMaxLogPosition;
             while ((line = sh.Reader.ReadLine()) != null)
             {
                 if (worker != null && (worker.CancellationPending || isDisposing))
@@ -259,7 +271,7 @@ namespace log4jDigger
                         worker.ReportProgress(progess + lastRelPos);
                 }
             }
-            sh.SetLastMaxPosition();
+            sh.SetLastMaxPosition(lastMainLog);
             System.Diagnostics.Debug.WriteLine($"{sh.Filename}; last position  {sh.LastMaxPosition:n0}; new lines {PositionList.Count - newPositions:n0};");
             isBusy = false;
 
@@ -271,11 +283,11 @@ namespace log4jDigger
             PositionList.Add(logPos);
 
             //Suchergebnisse aktualisieren
-            if(searchResults.Count > 0)
+            if (searchResults.Count > 0)
             {
-                foreach(KeyValuePair<SearchEventArgs, List<LogPos>> kv in searchResults)
+                foreach (KeyValuePair<SearchEventArgs, List<LogPos>> kv in searchResults)
                 {
-                    if(MatchSearch(logPos, kv.Key))
+                    if (MatchSearch(logPos, kv.Key))
                     {
                         kv.Value.Add(logPos);
                     }

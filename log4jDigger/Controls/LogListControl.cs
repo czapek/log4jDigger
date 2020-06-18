@@ -156,6 +156,7 @@ namespace log4jDigger.Controls
 
         public void Clear()
         {
+            streamingFactory.NewPositions -= StreamingFactory_NewPositions;
             VirtualListSize = 0;
             LongInfo = "";
             ShortInfo = "";
@@ -187,6 +188,10 @@ namespace log4jDigger.Controls
 
         public void SelectIndexVisible(int index)
         {
+            streamingFactory.Poll();
+            if (index < 0 || index >= VirtualListSize)
+                return;
+
             this.listViewLog.SelectedIndices.Clear();
             this.listViewLog.Items[index].Selected = true;
             this.listViewLog.Items[index].Focused = true;
@@ -221,6 +226,7 @@ namespace log4jDigger.Controls
         {
             if (SelectedIndex >= 0)
             {
+                streamingFactory.Poll();
                 if (searchEventArgs != null)
                     ShortInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0} ({SelectedLogPos.Order:n0})";
                 else
@@ -237,6 +243,10 @@ namespace log4jDigger.Controls
         {
             LogPos logPos = positionList[e.ItemIndex];
             String line = LoglineObject.ReadLine(logPos);
+
+            if (line == null)
+                return;
+
             ListViewItem lvi = new ListViewItem();
             lvi.BackColor = GetAgeColor(logPos.TimeStamp);
             lvi.UseItemStyleForSubItems = false;
