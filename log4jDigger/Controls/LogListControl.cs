@@ -86,6 +86,8 @@ namespace log4jDigger.Controls
                     Follow = true;
                 else if (positionList.Count() > 0)
                     listViewLog.Items[0].Selected = true;
+
+                timerRepaint.Enabled = true;
             }
 
         }
@@ -361,9 +363,11 @@ namespace log4jDigger.Controls
             return Color.White;
         }
 
-        private List<Color> last100Colors = new List<Color>();
+
         private void timerRepaint_Tick(object sender, EventArgs e)
         {
+            timerRepaint.Enabled = false;
+
             if (positionList == null || positionList.Count == 0)
                 return;
 
@@ -373,36 +377,11 @@ namespace log4jDigger.Controls
             int refreshFrom = positionList.Count > 100 ? positionList.Count - 100 : 0;
             if (positionList[refreshFrom].TimeStamp < DateTime.Now.AddDays(-1))
                 return;
+          
 
-            if (last100Colors.Count != positionList.Count - refreshFrom)
-                UpdateAgeColors(refreshFrom);
-
-            for (int i = refreshFrom; i < positionList.Count; i++)
-            {
-                if (last100Colors[i - refreshFrom] != GetAgeColor(positionList[i].TimeStamp))
-                {
-                    listViewLog.RedrawItems(refreshFrom, positionList.Count - 1, false);
-                    System.Diagnostics.Debug.WriteLine("refresh age");
-                    UpdateAgeColors(refreshFrom);
-                    return;
-                }
-            }
-
-        }
-
-        private void UpdateAgeColors(int refreshFrom)
-        {
-            if (last100Colors.Count == 100 && positionList.Count - refreshFrom == 100)
-            {
-                for (int i = refreshFrom; i < positionList.Count; i++)
-                    last100Colors[i - refreshFrom] = GetAgeColor(positionList[i].TimeStamp);
-            }
-            else
-            {
-                last100Colors.Clear();
-                for (int i = refreshFrom; i < positionList.Count; i++)
-                    last100Colors.Add(GetAgeColor(positionList[i].TimeStamp));
-            }
+            //eine Minute nach dem letzten Add zeichnen wir das Ende der liste neu, 
+            //damit die Farben des für das Alter der Logline nicht ganz falsch sind
+            listViewLog.RedrawItems(refreshFrom, positionList.Count - 1, false);
         }
     }
 }

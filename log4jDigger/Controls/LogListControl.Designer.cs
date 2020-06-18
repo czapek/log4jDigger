@@ -154,8 +154,7 @@
             // 
             // timerRepaint
             // 
-            this.timerRepaint.Enabled = true;
-            this.timerRepaint.Interval = 1000;
+            this.timerRepaint.Interval = 60000;
             this.timerRepaint.Tick += new System.EventHandler(this.timerRepaint_Tick);
             // 
             // LogListControl
