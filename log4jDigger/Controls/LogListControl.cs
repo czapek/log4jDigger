@@ -180,9 +180,22 @@ namespace log4jDigger.Controls
         {
             if (streamingFactory != null)
             {
+                List<LogPos> positionList = null;
                 streamingFactory.Poll();
-                SetPositionList(streamingFactory.PositionList);
-                SelectIndexVisible((int)(VirtualListSize - 1));
+                if (searchEventArgs != null)
+                {
+                    positionList = streamingFactory.GetSearchResult(searchEventArgs);
+                }
+                else
+                {
+                    positionList = streamingFactory.PositionList;
+                }
+
+                if (searchEventArgs == null)
+                {                    
+                    SetPositionList(positionList);
+                    SelectIndexVisible((int)(VirtualListSize - 1));
+                }
             }
         }
 
@@ -387,7 +400,7 @@ namespace log4jDigger.Controls
             int refreshFrom = positionList.Count > 100 ? positionList.Count - 100 : 0;
             if (positionList[refreshFrom].TimeStamp < DateTime.Now.AddDays(-1))
                 return;
-          
+
 
             //eine Minute nach dem letzten Add zeichnen wir das Ende der liste neu, 
             //damit die Farben des für das Alter der Logline nicht ganz falsch sind
