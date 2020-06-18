@@ -65,7 +65,8 @@ namespace log4jDigger
                 int headerPos = line.IndexOf(" - ");
                 String header = headerPos > 0 ? line.Substring(0, line.IndexOf(" - ")) : line;
                 int posThread = header.IndexOf(" [");
-                loglineObject.Threadname = posThread > 0 ? header.Substring(posThread + 1, header.LastIndexOf("] ") - posThread) : String.Empty;
+                int posThread2 = header.LastIndexOf("] ");
+                loglineObject.Threadname = posThread > 0 && posThread2 > 0 ? header.Substring(posThread + 1, posThread2 - posThread) : String.Empty;
                 int posClassname = header.LastIndexOf(' ');
                 loglineObject.Classname = posClassname > 0 ? header.Substring(header.LastIndexOf(' ') + 1) : String.Empty;
                 loglineObject.ClassnameShort = posClassname > 0 ? loglineObject.Classname.Substring(loglineObject.Classname.LastIndexOf('.') + 1) : String.Empty;
@@ -182,6 +183,9 @@ namespace log4jDigger
 
         public static string ReadLine(LogPos logPos)
         {
+            if (logPos == null)
+                return null;
+
             try
             {
                 logPos.StreamingHost.Reader.SetPosition(logPos.Pos);

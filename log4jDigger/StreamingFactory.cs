@@ -58,14 +58,20 @@ namespace log4jDigger
             {
                 int isBigger = sh.HasChanged();
                 if (isBigger > 0)
-                    newPositions += ScanFile(null, 0, sh);
+                {
+                    if (sh.LastMaxLine == LoglineObject.ReadLine(sh.LastMaxLogPosition))
+                    {
+                        newPositions += ScanFile(null, 0, sh);
+                    }
+                    else
+                    {
+                        SetInconsistent();
+                        return;
+                    }
+                }
                 else if (isBigger < 0)
                 {
-                    if (IsInConsistent != null)
-                        IsInConsistent.Invoke(this, EventArgs.Empty);
-
-                    EnablePolling = false;
-                    isBusy = false;
+                    SetInconsistent();
                     return;
                 }
             }
@@ -75,6 +81,15 @@ namespace log4jDigger
                 MainForm.FlashTrayIcon();
                 NewPositions.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private void SetInconsistent()
+        {
+            if (IsInConsistent != null)
+                IsInConsistent.Invoke(this, EventArgs.Empty);
+
+            EnablePolling = false;
+            isBusy = false;
         }
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)

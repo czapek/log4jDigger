@@ -278,6 +278,9 @@ namespace log4jDigger
             if (listViewBasket.CheckedItems.Count == 0)
                 return;
 
+            if (workerIndex.IsBusy)
+                return;
+
             logListControlMain.Follow = false;
 
             List<String> fileList = new List<String>();

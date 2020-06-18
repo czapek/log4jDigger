@@ -14,6 +14,7 @@ namespace log4jDigger
         private long lastFileLength;
         public long LastMaxPosition { get; private set; }
         public LogPos LastMaxLogPosition { get; private set; }
+        public String LastMaxLine { get; private set; }
 
         public StreamingHost(String filename)
         {
@@ -26,7 +27,8 @@ namespace log4jDigger
         {
             LastMaxLogPosition = logPos;
             LastMaxPosition = Reader.GetPosition();
-            lastFileLength = new FileInfo(Filename).Length; 
+            lastFileLength = new FileInfo(Filename).Length;
+            LastMaxLine = LoglineObject.ReadLine(logPos);
         }
 
         public int HasChanged()
