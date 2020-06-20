@@ -177,6 +177,7 @@ namespace log4jDigger
                 }
                 lineCounter++;
             }
+            infoTextBox.Select(0, 0);
 
             return index - (streamingFactory.PositionList[index].Order - logPos.Order);
         }

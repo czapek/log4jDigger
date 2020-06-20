@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace log4jDigger
@@ -95,10 +96,24 @@ namespace log4jDigger
             return false;
         }
 
+        private static Stopwatch sw;
         public static bool Tray(System.Windows.Forms.Form form, uint count)
         {
             if (Win2000OrLater)
             {
+                if(sw == null)
+                {
+                    sw = new Stopwatch();
+                    sw.Start();
+                }
+                else
+                {
+                    if (sw.ElapsedMilliseconds < 3000)
+                        return false;
+                    else
+                        sw.Restart();
+                }
+
                 FLASHWINFO fi = Create_FLASHWINFO(form.Handle, FLASHW_TRAY, count, 0);
                 return FlashWindowEx(ref fi);
             }

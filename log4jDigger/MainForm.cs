@@ -624,10 +624,18 @@ namespace log4jDigger
             }
             else if (e.KeyCode == Keys.F5)
             {
-                logListControlMain.Reload();
-                foreach (TabPage tp in tabControlMain.TabPages)
-                    if (tp.Name == "tabPageSearchResult" && tp != infoTabPage)
-                        ((LogListControl)tp.Controls[0]).Reload();
+                if (e.Control)
+                {
+                    Clear();
+                    CreateIndex();
+                }
+                else if (!logListControlMain.Follow)
+                {
+                    logListControlMain.Reload();
+                    foreach (TabPage tp in tabControlMain.TabPages)
+                        if (tp.Name == "tabPageSearchResult" && tp != infoTabPage)
+                            ((LogListControl)tp.Controls[0]).Reload();
+                }
             }
         }
 

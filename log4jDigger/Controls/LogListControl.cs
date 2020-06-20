@@ -19,6 +19,7 @@ namespace log4jDigger.Controls
         private StreamingFactory streamingFactory;
         private List<LogPos> positionList;
         private delegate void SafeSetPositionList(List<LogPos> pl);
+        private Object lockObject = new Object();
 
         public void SetStreamingFactory(StreamingFactory sf)
         {
@@ -77,19 +78,25 @@ namespace log4jDigger.Controls
 
         private void SetPositionList(List<LogPos> pl)
         {
-            System.Diagnostics.Debug.WriteLine("SetPositionList in LogListControl");
-            positionList = pl;
-            if (positionList != null)
+            lock (lockObject)
             {
-                VirtualListSize = positionList.Count();
-                if (follow)
-                    Follow = true;
-                else if (positionList.Count() > 0)
-                    listViewLog.Items[0].Selected = true;
+                System.Diagnostics.Debug.WriteLine("SetPositionList in LogListControl");
+                positionList = pl;
+                if (positionList != null)
+                {
+                    VirtualListSize = positionList.Count();
 
-                timerRepaint.Enabled = true;
+                    if (positionList.Count == 0)
+                        return;
+
+                    if (follow && listViewLog.VirtualListSize > 0)
+                        SelectIndexVisible((int)(listViewLog.VirtualListSize - 1));      
+                    else if (positionList.Count() > 0)
+                        listViewLog.Items[0].Selected = true;
+
+                    timerRepaint.Enabled = true;
+                }
             }
-
         }
 
         public String ShortInfo
@@ -122,11 +129,14 @@ namespace log4jDigger.Controls
         {
             get
             {
-                if (listViewLog.SelectedIndices.Count > 0)
+                lock (listViewLog)
                 {
-                    int index = listViewLog.SelectedIndices[0];
-                    if (positionList != null && positionList.Count > index)
-                        return positionList[index];
+                    if (listViewLog.SelectedIndices.Count > 0)
+                    {
+                        int index = listViewLog.SelectedIndices[0];
+                        if (positionList != null && positionList.Count > index)
+                            return positionList[index];
+                    }
                 }
                 return null;
             }
@@ -137,15 +147,18 @@ namespace log4jDigger.Controls
         {
             set
             {
-                if (streamingFactory != null)
-                    streamingFactory.EnablePolling = value;
+                lock (lockObject)
+                {
+                    if (streamingFactory != null)
+                        streamingFactory.EnablePolling = value;
 
-                follow = value;
-                if (follow && listViewLog.VirtualListSize > 0)
-                    SelectIndexVisible((int)(listViewLog.VirtualListSize - 1));
+                    follow = value;
+                    if (follow && listViewLog.VirtualListSize > 0)
+                        SelectIndexVisible((int)(listViewLog.VirtualListSize - 1));
 
-                if (searchEventArgs == null)
-                    this.LongInfo = follow ? "Follow on" : "Follow off";
+                    if (searchEventArgs == null)
+                        this.LongInfo = follow ? "Follow on" : "Follow off";
+                }
             }
 
             get
@@ -156,6 +169,9 @@ namespace log4jDigger.Controls
 
         public void Clear()
         {
+            if (streamingFactory == null)
+                return;
+
             streamingFactory.NewPositions -= StreamingFactory_NewPositions;
             VirtualListSize = 0;
             LongInfo = "";
@@ -166,13 +182,19 @@ namespace log4jDigger.Controls
         {
             set
             {
-                if (listViewLog.VirtualListSize != value)
-                    listViewLog.SetVirtualListSize((int)value);
+                lock (lockObject)
+                {
+                    if (listViewLog.VirtualListSize != value)
+                        listViewLog.SetVirtualListSize((int)value);
+                }
             }
 
             get
             {
-                return (int)listViewLog.VirtualListSize;
+                lock (lockObject)
+                {
+                    return (int)listViewLog.VirtualListSize;
+                }
             }
         }
 
@@ -180,45 +202,52 @@ namespace log4jDigger.Controls
         {
             if (streamingFactory != null)
             {
-                List<LogPos> positionList = null;
-                streamingFactory.Poll();
-                if (searchEventArgs != null)
+                lock (lockObject)
                 {
-                    positionList = streamingFactory.GetSearchResult(searchEventArgs);
-                }
-                else
-                {
-                    positionList = streamingFactory.PositionList;
-                }
+                    List<LogPos> positionList = null;
+                    streamingFactory.Poll();
+                    if (searchEventArgs != null)
+                    {
+                        positionList = streamingFactory.GetSearchResult(searchEventArgs);
+                    }
+                    else
+                    {
+                        positionList = streamingFactory.PositionList;
+                    }
 
-                if (searchEventArgs == null)
-                {                    
-                    SetPositionList(positionList);
-                    SelectIndexVisible((int)(VirtualListSize - 1));
+                    if (searchEventArgs == null)
+                    {
+                        SetPositionList(positionList);
+                        SelectIndexVisible((int)(VirtualListSize - 1));
+                    }
                 }
             }
         }
 
         public void SelectIndexVisible(int index)
         {
-            streamingFactory.Poll();
             if (index < 0 || index >= VirtualListSize)
                 return;
-
-            this.listViewLog.SelectedIndices.Clear();
-            this.listViewLog.Items[index].Selected = true;
-            this.listViewLog.Items[index].Focused = true;
-            this.listViewLog.Items[index].EnsureVisible();
+            lock (lockObject)
+            {
+                this.listViewLog.SelectedIndices.Clear();
+                this.listViewLog.Items[index].Selected = true;
+                this.listViewLog.Items[index].Focused = true;
+                this.listViewLog.Items[index].EnsureVisible();
+            }
         }
 
         public int SelectedIndex
         {
             get
             {
-                if (this.listViewLog.SelectedIndices.Count > 0)
-                    return this.listViewLog.SelectedIndices[0];
-                else
-                    return -1;
+                lock (lockObject)
+                {
+                    if (this.listViewLog.SelectedIndices.Count > 0)
+                        return this.listViewLog.SelectedIndices[0];
+                    else
+                        return -1;
+                }
             }
         }
 
@@ -239,67 +268,72 @@ namespace log4jDigger.Controls
         {
             if (SelectedIndex >= 0)
             {
-                streamingFactory.Poll();
-                if (searchEventArgs != null)
-                    ShortInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0} ({SelectedLogPos.Order:n0})";
-                else
-                    ShortInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0}";
-
-                if (SelectedIndexChangedListView != null)
+                lock (lockObject)
                 {
-                    SelectedIndexChangedListView.Invoke(this, EventArgs.Empty);
+                    if (searchEventArgs != null)
+                        ShortInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0} ({SelectedLogPos.Order:n0})";
+                    else
+                        ShortInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0}";
+
+                    if (SelectedIndexChangedListView != null)
+                    {
+                        SelectedIndexChangedListView.Invoke(this, EventArgs.Empty);
+                    }
                 }
             }
         }
 
         private void listViewLog_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            LogPos logPos = positionList[e.ItemIndex];
-            String line = LoglineObject.ReadLine(logPos);
-
-            if (line == null)
-                return;
-
-            ListViewItem lvi = new ListViewItem();
-            lvi.BackColor = GetAgeColor(logPos.TimeStamp);
-            lvi.UseItemStyleForSubItems = false;
-            LoglineObject loglineObject = LoglineObject.CreateLoglineObject(line, logPos);
-            lvi.Text = loglineObject.Timestamp;
-
-            ListViewItem.ListViewSubItem lvsuLevel = new ListViewItem.ListViewSubItem();
-            lvsuLevel.Text = loglineObject.Level;
-            lvsuLevel.BackColor = loglineObject.GetLevelBackColor();
-            lvsuLevel.ForeColor = loglineObject.GetLevelFrontColor();
-            lvi.SubItems.Add(lvsuLevel);
-
-            ListViewItem.ListViewSubItem lvsuDuration = new ListViewItem.ListViewSubItem();
-            if (loglineObject.Duration.HasValue)
+            lock (lockObject)
             {
-                lvsuDuration.Text = $"{loglineObject.Duration.Value:n0} ms";
-                if (loglineObject.Duration.Value > 1000)
-                    lvsuDuration.BackColor = loglineObject.Duration.Value > 5000 ? Color.LightCoral : Color.LightYellow;
-            }
+                LogPos logPos = positionList[e.ItemIndex];
+                String line = LoglineObject.ReadLine(logPos);
 
-            lvi.SubItems.Add(lvsuDuration);
-            lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.ClassnameShort });
-            lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.Message });
-            lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.Threadname });
-            lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = logPos.LogSource.ToString() });
+                if (line == null)
+                    return;
 
-            if (logPos.LoglineType == LoglineType.CHILD_LINE)
-            {
-                foreach (String kv in LogUtils.LineMarkerFont)
+                ListViewItem lvi = new ListViewItem();
+                lvi.BackColor = GetAgeColor(logPos.TimeStamp);
+                lvi.UseItemStyleForSubItems = false;
+                LoglineObject loglineObject = LoglineObject.CreateLoglineObject(line, logPos);
+                lvi.Text = loglineObject.Timestamp;
+
+                ListViewItem.ListViewSubItem lvsuLevel = new ListViewItem.ListViewSubItem();
+                lvsuLevel.Text = loglineObject.Level;
+                lvsuLevel.BackColor = loglineObject.GetLevelBackColor();
+                lvsuLevel.ForeColor = loglineObject.GetLevelFrontColor();
+                lvi.SubItems.Add(lvsuLevel);
+
+                ListViewItem.ListViewSubItem lvsuDuration = new ListViewItem.ListViewSubItem();
+                if (loglineObject.Duration.HasValue)
                 {
-                    if (line.Contains(kv))
-                    {
-                        lvi.SubItems[4].BackColor = Color.LightGreen;
-                        lvi.SubItems[4].Font = new Font(listViewLog.Font, FontStyle.Bold);
-                    }
-
+                    lvsuDuration.Text = $"{loglineObject.Duration.Value:n0} ms";
+                    if (loglineObject.Duration.Value > 1000)
+                        lvsuDuration.BackColor = loglineObject.Duration.Value > 5000 ? Color.LightCoral : Color.LightYellow;
                 }
-            }
 
-            e.Item = lvi;
+                lvi.SubItems.Add(lvsuDuration);
+                lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.ClassnameShort });
+                lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.Message });
+                lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.Threadname });
+                lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = logPos.LogSource.ToString() });
+
+                if (logPos.LoglineType == LoglineType.CHILD_LINE)
+                {
+                    foreach (String kv in LogUtils.LineMarkerFont)
+                    {
+                        if (line.Contains(kv))
+                        {
+                            lvi.SubItems[4].BackColor = Color.LightGreen;
+                            lvi.SubItems[4].Font = new Font(listViewLog.Font, FontStyle.Bold);
+                        }
+
+                    }
+                }
+
+                e.Item = lvi;
+            }
         }
 
         private LoglineObject GetLoglineObject(int index)
@@ -312,60 +346,66 @@ namespace log4jDigger.Controls
         LoglineObject refObject;
         private void jumpToNextLineInOfThreadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listViewLog.SelectedIndices.Count > 0)
+            lock (lockObject)
             {
-                int index = listViewLog.SelectedIndices[0];
-
-                if (refObject.LogPos != null && refObject.LogPos.Order == index)
-                    return;
-
-                this.Cursor = Cursors.WaitCursor;
-                refObject = GetLoglineObject(index);
-
-                while (index < positionList.Count - 1)
+                if (listViewLog.SelectedIndices.Count > 0)
                 {
-                    index++;
-                    LoglineObject nextObject = GetLoglineObject(index);
+                    int index = listViewLog.SelectedIndices[0];
 
-                    if (nextObject.Threadname == refObject.Threadname)
+                    if (refObject.LogPos != null && refObject.LogPos.Order == index)
+                        return;
+
+                    this.Cursor = Cursors.WaitCursor;
+                    refObject = GetLoglineObject(index);
+
+                    while (index < positionList.Count - 1)
                     {
-                        SelectIndexVisible(index);
-                        break;
-                    }
+                        index++;
+                        LoglineObject nextObject = GetLoglineObject(index);
 
-                    if ((nextObject.LogPos.TimeStamp - refObject.LogPos.TimeStamp).TotalMinutes > 60)
-                        break;
+                        if (nextObject.Threadname == refObject.Threadname)
+                        {
+                            SelectIndexVisible(index);
+                            break;
+                        }
+
+                        if ((nextObject.LogPos.TimeStamp - refObject.LogPos.TimeStamp).TotalMinutes > 60)
+                            break;
+                    }
+                    this.Cursor = Cursors.Default;
                 }
-                this.Cursor = Cursors.Default;
             }
         }
 
         private void jumpToPreviousLineInOfThreadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listViewLog.SelectedIndices.Count > 0)
+            lock (lockObject)
             {
-                int index = listViewLog.SelectedIndices[0];
-                if (refObject.LogPos != null && refObject.LogPos.Order == index)
-                    return;
-
-                this.Cursor = Cursors.WaitCursor;
-                refObject = GetLoglineObject(index);
-
-                while (index > 0)
+                if (listViewLog.SelectedIndices.Count > 0)
                 {
-                    index--;
-                    LoglineObject nextObject = GetLoglineObject(index);
+                    int index = listViewLog.SelectedIndices[0];
+                    if (refObject.LogPos != null && refObject.LogPos.Order == index)
+                        return;
 
-                    if (nextObject.Threadname == refObject.Threadname)
+                    this.Cursor = Cursors.WaitCursor;
+                    refObject = GetLoglineObject(index);
+
+                    while (index > 0)
                     {
-                        SelectIndexVisible(index);
-                        break;
-                    }
+                        index--;
+                        LoglineObject nextObject = GetLoglineObject(index);
 
-                    if ((refObject.LogPos.TimeStamp - nextObject.LogPos.TimeStamp).TotalMinutes > 60)
-                        break;
+                        if (nextObject.Threadname == refObject.Threadname)
+                        {
+                            SelectIndexVisible(index);
+                            break;
+                        }
+
+                        if ((refObject.LogPos.TimeStamp - nextObject.LogPos.TimeStamp).TotalMinutes > 60)
+                            break;
+                    }
+                    this.Cursor = Cursors.Default;
                 }
-                this.Cursor = Cursors.Default;
             }
         }
 
@@ -389,22 +429,28 @@ namespace log4jDigger.Controls
 
         private void timerRepaint_Tick(object sender, EventArgs e)
         {
-            timerRepaint.Enabled = false;
-
-            if (positionList == null || positionList.Count == 0)
+            if (follow)
                 return;
 
-            if (positionList[positionList.Count - 1].TimeStamp < DateTime.Now.AddDays(-1))
-                return;
+            lock (lockObject)
+            {
+                timerRepaint.Enabled = false;
 
-            int refreshFrom = positionList.Count > 100 ? positionList.Count - 100 : 0;
-            if (positionList[refreshFrom].TimeStamp < DateTime.Now.AddDays(-1))
-                return;
+                if (positionList == null || positionList.Count == 0)
+                    return;
+
+                if (positionList[positionList.Count - 1].TimeStamp < DateTime.Now.AddDays(-1))
+                    return;
+
+                int refreshFrom = positionList.Count > 100 ? positionList.Count - 100 : 0;
+                if (positionList[refreshFrom].TimeStamp < DateTime.Now.AddDays(-1))
+                    return;
 
 
-            //eine Minute nach dem letzten Add zeichnen wir das Ende der liste neu, 
-            //damit die Farben des für das Alter der Logline nicht ganz falsch sind
-            listViewLog.RedrawItems(refreshFrom, positionList.Count - 1, false);
+                //eine Minute nach dem letzten Add zeichnen wir das Ende der liste neu, 
+                //damit die Farben des für das Alter der Logline nicht ganz falsch sind
+                listViewLog.RedrawItems(refreshFrom, positionList.Count - 1, false);
+            }
         }
     }
 }

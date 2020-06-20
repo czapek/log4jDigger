@@ -37,10 +37,12 @@
             // 
             // richTextBoxInfo
             // 
+            this.richTextBoxInfo.BackColor = System.Drawing.Color.White;
             this.richTextBoxInfo.ContextMenuStrip = this.contextMenuStripInfo;
             this.richTextBoxInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxInfo.Location = new System.Drawing.Point(0, 0);
             this.richTextBoxInfo.Name = "richTextBoxInfo";
+            this.richTextBoxInfo.ReadOnly = true;
             this.richTextBoxInfo.Size = new System.Drawing.Size(701, 358);
             this.richTextBoxInfo.TabIndex = 0;
             this.richTextBoxInfo.Text = "";
@@ -51,12 +53,12 @@
             this.contextMenuStripInfo.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.searchForSelectionToolStripMenuItem});
             this.contextMenuStripInfo.Name = "contextMenuStripInfo";
-            this.contextMenuStripInfo.Size = new System.Drawing.Size(181, 48);
+            this.contextMenuStripInfo.Size = new System.Drawing.Size(179, 26);
             // 
             // searchForSelectionToolStripMenuItem
             // 
             this.searchForSelectionToolStripMenuItem.Name = "searchForSelectionToolStripMenuItem";
-            this.searchForSelectionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.searchForSelectionToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.searchForSelectionToolStripMenuItem.Text = "Search for Selection";
             this.searchForSelectionToolStripMenuItem.Click += new System.EventHandler(this.searchForSelectionToolStripMenuItem_Click);
             // 

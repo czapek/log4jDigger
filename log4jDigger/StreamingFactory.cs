@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,8 @@ namespace log4jDigger
         private bool isDisposing = false;
         private Dictionary<SearchEventArgs, List<LogPos>> searchResults = new Dictionary<SearchEventArgs, List<LogPos>>();
         private bool isBusy = false;
-        Timer pollTimer;
+        private Timer pollTimer;
+
         public StreamingFactory()
         {
             pollTimer = new Timer(2000);
@@ -52,7 +54,11 @@ namespace log4jDigger
             if (isBusy)
                 return;
 
-            System.Diagnostics.Debug.WriteLine("Poll");
+            isBusy = true;
+
+            StackTrace stackTrace = new StackTrace();
+            System.Diagnostics.Debug.WriteLine(stackTrace.GetFrame(1).GetMethod().Name);
+
             long newPositions = 0;
             foreach (StreamingHost sh in streamingHosts)
             {
@@ -65,13 +71,13 @@ namespace log4jDigger
                     }
                     else
                     {
-                        SetInconsistent();
+                        SetInconsistent();              
                         return;
                     }
                 }
                 else if (isBigger < 0)
                 {
-                    SetInconsistent();
+                    SetInconsistent();      
                     return;
                 }
             }
@@ -81,6 +87,7 @@ namespace log4jDigger
                 MainForm.FlashTrayIcon();
                 NewPositions.Invoke(this, EventArgs.Empty);
             }
+            isBusy = false;
         }
 
         private void SetInconsistent()
@@ -152,6 +159,10 @@ namespace log4jDigger
         {
             bool addLine = true;
             String line = LoglineObject.ReadLine(logPos);
+
+            if (line == null)
+                return false;
+
             if (e.SearchText.Length > 0)
             {
                 if (e.UseRegex)
