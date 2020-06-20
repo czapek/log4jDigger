@@ -98,6 +98,17 @@ namespace log4jDigger
             isBusy = false;
         }
 
+        public void OrderPositionList()
+        {
+            PositionList = PositionList.OrderBy(x => x.TimeStamp).ThenBy(x => x.Order).ToList();
+            int cnt = 0;
+            foreach (LogPos lp in PositionList)
+            {
+                lp.Order = cnt;
+                cnt++;
+            }
+        }
+
         private void SetInconsistent()
         {
             if (IsInConsistent != null)

@@ -314,7 +314,7 @@ namespace log4jDigger
                 progress += 100;
             }
             workerIndex.ReportProgress(progress);
-            streamingFactory.PositionList = streamingFactory.PositionList.OrderBy(x => x.TimeStamp).ThenBy(x => x.Order).ToList();
+            streamingFactory.OrderPositionList();
         }
 
         private void WorkerIndex_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -692,8 +692,14 @@ namespace log4jDigger
 
         private void listViewBasket_DoubleClick(object sender, EventArgs e)
         {
-            if (listViewBasket.SelectedItems.Count == 1 && listViewBasket.SelectedItems[0].Checked)
+            if (listViewBasket.SelectedItems.Count == 1)
+            {
+                foreach (ListViewItem item in listViewBasket.CheckedItems)
+                    item.Checked = false;
+                listViewBasket.SelectedItems[0].Checked = true;
                 CreateIndex();
+            }
+                
         }
     }
 }
