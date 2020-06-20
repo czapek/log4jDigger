@@ -75,9 +75,12 @@ namespace log4jDigger.Controls
         {
             set
             {
-                isSetValues = true;
-                timeControlJump.Value = value;
-                isSetValues = false;
+                if (value >= timeControlJump.MinDate && value <= timeControlJump.MaxDate)
+                {
+                    isSetValues = true;
+                    timeControlJump.Value = value;
+                    isSetValues = false;
+                }
             }
 
             get
@@ -90,9 +93,12 @@ namespace log4jDigger.Controls
         {
             set
             {
-                isSetValues = true;
-                numericUpDownLineNumber.Value = value;
-                isSetValues = false;
+                if (value >= numericUpDownLineNumber.Minimum && value <= numericUpDownLineNumber.Maximum)
+                {
+                    isSetValues = true;
+                    numericUpDownLineNumber.Value = value;
+                    isSetValues = false;
+                }
             }
         }
 
