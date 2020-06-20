@@ -637,6 +637,11 @@ namespace log4jDigger
                             ((LogListControl)tp.Controls[0]).Reload();
                 }
             }
+            else if (e.KeyCode == Keys.F4)
+            {
+                if (streamingFactory != null)
+                    streamingFactory.ReleaseFile();
+            }
         }
 
         public static void FlashTrayIcon()

@@ -185,7 +185,10 @@ namespace log4jDigger
         public static string ReadLine(LogPos logPos)
         {
             if (logPos == null)
-                return null;
+                return $"{DateTime.Now:yyyy-MM-dd HH:mm:ss,fff} FATAL [log4jDigger] log4jDigger - Unvalid Request for Loline";
+
+            if (logPos.StreamingHost.IsDisposed)
+                return $"{DateTime.Now:yyyy-MM-dd HH:mm:ss,fff} FATAL [log4jDigger] log4jDigger - Stream is disposed";
 
             try
             {
@@ -195,7 +198,7 @@ namespace log4jDigger
             }
             catch
             {
-                return null;
+                return $"{DateTime.Now:yyyy-MM-dd HH:mm:ss,fff} FATAL [log4jDigger] log4jDigger - Error resolving Logline from Stream";
             }
         }
 

@@ -15,6 +15,7 @@ namespace log4jDigger
         public long LastMaxPosition { get; private set; }
         public LogPos LastMaxLogPosition { get; private set; }
         public String LastMaxLine { get; private set; }
+        public bool IsDisposed { get; private set; }
 
         public StreamingHost(String filename)
         {
@@ -29,6 +30,22 @@ namespace log4jDigger
             LastMaxPosition = Reader.GetPosition();
             lastFileLength = new FileInfo(Filename).Length;
             LastMaxLine = LoglineObject.ReadLine(logPos);
+            IsDisposed = false;
+        }
+
+        public void ReleaseFile()
+        {
+            if (!IsDisposed)
+                Dispose();
+        }
+
+        public void UnReleaseFile()
+        {
+            if (IsDisposed)
+            {
+                Stream = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                Reader = new StreamReader(Stream, Encoding.Default);
+            }
         }
 
         public int HasChanged()
@@ -40,6 +57,7 @@ namespace log4jDigger
         {
             Stream.Dispose();
             Reader.Dispose();
+            IsDisposed = true;
         }    
     }
 }

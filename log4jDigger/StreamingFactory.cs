@@ -35,6 +35,14 @@ namespace log4jDigger
                 searchResults.Remove(e);
         }
 
+        public void ReleaseFile()
+        {
+            foreach (StreamingHost sh in streamingHosts)
+            {
+                sh.ReleaseFile();
+            }
+        }
+
         public bool EnablePolling
         {
 
@@ -71,13 +79,13 @@ namespace log4jDigger
                     }
                     else
                     {
-                        SetInconsistent();              
+                        SetInconsistent();
                         return;
                     }
                 }
                 else if (isBigger < 0)
                 {
-                    SetInconsistent();      
+                    SetInconsistent();
                     return;
                 }
             }
@@ -224,83 +232,89 @@ namespace log4jDigger
         {
             int newPositions = PositionList.Count;
             isBusy = true;
-            LogSource source = new LogSource() { Filename = sh.Filename };
 
-            String line;
-            int lastRelPos = 0;
-            sh.Reader.SetPosition(sh.LastMaxPosition);
-            long position = sh.Reader.GetPosition();
-            LogPos lastMainLog = sh.LastMaxLogPosition;
-            while ((line = sh.Reader.ReadLine()) != null)
+            try
             {
-                if (worker != null && (worker.CancellationPending || isDisposing))
-                    break;
-
-                DateTime date;
-                if (line.Length >= 23 && Char.IsDigit(line[0]) && DateTime.TryParseExact(line.Substring(0, 23), "yyyy-MM-dd HH:mm:ss,fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                LogSource source = new LogSource() { Filename = sh.Filename };
+                String line;
+                int lastRelPos = 0;
+                sh.Reader.SetPosition(sh.LastMaxPosition);
+                long position = sh.Reader.GetPosition();
+                LogPos lastMainLog = sh.LastMaxLogPosition;
+                while ((line = sh.Reader.ReadLine()) != null)
                 {
-                    lastMainLog = new LogPos() { TimeStamp = date, Pos = position, Order = PositionList.Count(), LoglineType = LoglineType.MAIN_LOG, StreamingHost = sh, LogSource = source };
-                    AddToPositionList(lastMainLog);
-                }
-                else if (!String.IsNullOrWhiteSpace(line))
-                {
-                    if (line.StartsWith("#"))
-                    {
-                        String[] parts = line.Split('#');
+                    if (worker != null && (worker.CancellationPending || isDisposing))
+                        break;
 
-                        if (parts.Length == 10)
-                        {
-                            int index = parts[6].IndexOf(" - ");
-                            if (index > 0)
-                            {
-                                source = new LogSource() { Filename = parts[6].Substring(10, index - 10), Servername = parts[3].Trim() };
-                            }
-                        }
-                    }
-                    else if (CheckCatalinaLine(line, out date))
+                    DateTime date;
+                    if (line.Length >= 23 && Char.IsDigit(line[0]) && DateTime.TryParseExact(line.Substring(0, 23), "yyyy-MM-dd HH:mm:ss,fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                     {
-                        lastMainLog = new LogPos() { TimeStamp = date, Pos = position, Order = PositionList.Count(), LoglineType = LoglineType.CATALINA_LOG, StreamingHost = sh, LogSource = source };
+                        lastMainLog = new LogPos() { TimeStamp = date, Pos = position, Order = PositionList.Count(), LoglineType = LoglineType.MAIN_LOG, StreamingHost = sh, LogSource = source };
                         AddToPositionList(lastMainLog);
                     }
-                    else if (lastMainLog != null)
+                    else if (!String.IsNullOrWhiteSpace(line))
                     {
-                        LogPos childLogPos = new LogPos()
+                        if (line.StartsWith("#"))
                         {
-                            TimeStamp = PositionList[PositionList.Count - 1].TimeStamp,
-                            Pos = position,
-                            Order = PositionList.Count(),
-                            LoglineType = LoglineType.CHILD_LINE,
-                            StreamingHost = sh,
-                            LogSource = source,
-                            Parent = lastMainLog
-                        };
+                            String[] parts = line.Split('#');
 
-                        if (lastMainLog != null)
-                        {
-                            if (lastMainLog.Childs == null)
-                                lastMainLog.Childs = new List<LogPos>();
-
-                            lastMainLog.Childs.Add(childLogPos);
+                            if (parts.Length == 10)
+                            {
+                                int index = parts[6].IndexOf(" - ");
+                                if (index > 0)
+                                {
+                                    source = new LogSource() { Filename = parts[6].Substring(10, index - 10), Servername = parts[3].Trim() };
+                                }
+                            }
                         }
+                        else if (CheckCatalinaLine(line, out date))
+                        {
+                            lastMainLog = new LogPos() { TimeStamp = date, Pos = position, Order = PositionList.Count(), LoglineType = LoglineType.CATALINA_LOG, StreamingHost = sh, LogSource = source };
+                            AddToPositionList(lastMainLog);
+                        }
+                        else if (lastMainLog != null)
+                        {
+                            LogPos childLogPos = new LogPos()
+                            {
+                                TimeStamp = PositionList[PositionList.Count - 1].TimeStamp,
+                                Pos = position,
+                                Order = PositionList.Count(),
+                                LoglineType = LoglineType.CHILD_LINE,
+                                StreamingHost = sh,
+                                LogSource = source,
+                                Parent = lastMainLog
+                            };
 
-                        AddToPositionList(childLogPos);
+                            if (lastMainLog != null)
+                            {
+                                if (lastMainLog.Childs == null)
+                                    lastMainLog.Childs = new List<LogPos>();
+
+                                lastMainLog.Childs.Add(childLogPos);
+                            }
+
+                            AddToPositionList(childLogPos);
+                        }
+                    }
+
+                    position = sh.Reader.GetPosition();
+                    int relPos = (int)(100.0 * (double)position / (double)sh.Stream.Length);
+
+                    if (lastRelPos != relPos)
+                    {
+                        lastRelPos = relPos;
+                        if (worker != null)
+                            worker.ReportProgress(progess + lastRelPos);
                     }
                 }
-
-                position = sh.Reader.GetPosition();
-                int relPos = (int)(100.0 * (double)position / (double)sh.Stream.Length);
-
-                if (lastRelPos != relPos)
-                {
-                    lastRelPos = relPos;
-                    if (worker != null)
-                        worker.ReportProgress(progess + lastRelPos);
-                }
+                sh.SetLastMaxPosition(lastMainLog);
+                System.Diagnostics.Debug.WriteLine($"{sh.Filename}; last position  {sh.LastMaxPosition:n0}; new lines {PositionList.Count - newPositions:n0};");
+                isBusy = false;
             }
-            sh.SetLastMaxPosition(lastMainLog);
-            System.Diagnostics.Debug.WriteLine($"{sh.Filename}; last position  {sh.LastMaxPosition:n0}; new lines {PositionList.Count - newPositions:n0};");
-            isBusy = false;
-
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ScanFile: " + ex.Message);
+            }
             return PositionList.Count - newPositions;
         }
 

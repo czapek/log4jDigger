@@ -90,7 +90,7 @@ namespace log4jDigger.Controls
                         return;
 
                     if (follow && listViewLog.VirtualListSize > 0)
-                        SelectIndexVisible((int)(listViewLog.VirtualListSize - 1));      
+                        SelectIndexVisible((int)(listViewLog.VirtualListSize - 1));
                     else if (positionList.Count() > 0)
                         listViewLog.Items[0].Selected = true;
 
@@ -230,10 +230,17 @@ namespace log4jDigger.Controls
                 return;
             lock (lockObject)
             {
-                this.listViewLog.SelectedIndices.Clear();
-                this.listViewLog.Items[index].Selected = true;
-                this.listViewLog.Items[index].Focused = true;
-                this.listViewLog.Items[index].EnsureVisible();
+                try
+                {
+                    this.listViewLog.SelectedIndices.Clear();
+                    this.listViewLog.Items[index].Selected = true;
+                    this.listViewLog.Items[index].Focused = true;
+                    this.listViewLog.Items[index].EnsureVisible();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("SelectIndexVisible:" + ex.Message);
+                }
             }
         }
 
@@ -285,55 +292,49 @@ namespace log4jDigger.Controls
 
         private void listViewLog_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            lock (lockObject)
+            LogPos logPos = positionList[e.ItemIndex];
+            String line = LoglineObject.ReadLine(logPos);
+
+            ListViewItem lvi = new ListViewItem();
+            lvi.BackColor = GetAgeColor(logPos.TimeStamp);
+            lvi.UseItemStyleForSubItems = false;
+            LoglineObject loglineObject = LoglineObject.CreateLoglineObject(line, logPos);
+            lvi.Text = loglineObject.Timestamp;
+
+            ListViewItem.ListViewSubItem lvsuLevel = new ListViewItem.ListViewSubItem();
+            lvsuLevel.Text = loglineObject.Level;
+            lvsuLevel.BackColor = loglineObject.GetLevelBackColor();
+            lvsuLevel.ForeColor = loglineObject.GetLevelFrontColor();
+            lvi.SubItems.Add(lvsuLevel);
+
+            ListViewItem.ListViewSubItem lvsuDuration = new ListViewItem.ListViewSubItem();
+            if (loglineObject.Duration.HasValue)
             {
-                LogPos logPos = positionList[e.ItemIndex];
-                String line = LoglineObject.ReadLine(logPos);
-
-                if (line == null)
-                    return;
-
-                ListViewItem lvi = new ListViewItem();
-                lvi.BackColor = GetAgeColor(logPos.TimeStamp);
-                lvi.UseItemStyleForSubItems = false;
-                LoglineObject loglineObject = LoglineObject.CreateLoglineObject(line, logPos);
-                lvi.Text = loglineObject.Timestamp;
-
-                ListViewItem.ListViewSubItem lvsuLevel = new ListViewItem.ListViewSubItem();
-                lvsuLevel.Text = loglineObject.Level;
-                lvsuLevel.BackColor = loglineObject.GetLevelBackColor();
-                lvsuLevel.ForeColor = loglineObject.GetLevelFrontColor();
-                lvi.SubItems.Add(lvsuLevel);
-
-                ListViewItem.ListViewSubItem lvsuDuration = new ListViewItem.ListViewSubItem();
-                if (loglineObject.Duration.HasValue)
-                {
-                    lvsuDuration.Text = $"{loglineObject.Duration.Value:n0} ms";
-                    if (loglineObject.Duration.Value > 1000)
-                        lvsuDuration.BackColor = loglineObject.Duration.Value > 5000 ? Color.LightCoral : Color.LightYellow;
-                }
-
-                lvi.SubItems.Add(lvsuDuration);
-                lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.ClassnameShort });
-                lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.Message });
-                lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.Threadname });
-                lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = logPos.LogSource.ToString() });
-
-                if (logPos.LoglineType == LoglineType.CHILD_LINE)
-                {
-                    foreach (String kv in LogUtils.LineMarkerFont)
-                    {
-                        if (line.Contains(kv))
-                        {
-                            lvi.SubItems[4].BackColor = Color.LightGreen;
-                            lvi.SubItems[4].Font = new Font(listViewLog.Font, FontStyle.Bold);
-                        }
-
-                    }
-                }
-
-                e.Item = lvi;
+                lvsuDuration.Text = $"{loglineObject.Duration.Value:n0} ms";
+                if (loglineObject.Duration.Value > 1000)
+                    lvsuDuration.BackColor = loglineObject.Duration.Value > 5000 ? Color.LightCoral : Color.LightYellow;
             }
+
+            lvi.SubItems.Add(lvsuDuration);
+            lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.ClassnameShort });
+            lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.Message });
+            lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = loglineObject.Threadname });
+            lvi.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = logPos.LogSource.ToString() });
+
+            if (logPos.LoglineType == LoglineType.CHILD_LINE)
+            {
+                foreach (String kv in LogUtils.LineMarkerFont)
+                {
+                    if (line.Contains(kv))
+                    {
+                        lvi.SubItems[4].BackColor = Color.LightGreen;
+                        lvi.SubItems[4].Font = new Font(listViewLog.Font, FontStyle.Bold);
+                    }
+
+                }
+            }
+
+            e.Item = lvi;
         }
 
         private LoglineObject GetLoglineObject(int index)
