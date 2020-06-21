@@ -58,7 +58,7 @@ namespace log4jDigger
         }
 
         public static LoglineObject CreateLoglineObject(string line, LogPos logPos)
-        { 
+        {
             LoglineObject loglineObject = new LoglineObject() { LogPos = logPos };
             if (logPos.LoglineType == LoglineType.MAIN_LOG)
             {
@@ -172,7 +172,7 @@ namespace log4jDigger
                     {
                         infoTextBox.Select(infoTextBox.GetFirstCharIndexFromLine(lineCounter), infoLine.Length);
                         infoTextBox.SelectionBackColor = Color.LightGreen;
-                        infoTextBox.SelectionFont = new Font(infoTextBox.Font, FontStyle.Bold);  
+                        infoTextBox.SelectionFont = new Font(infoTextBox.Font, FontStyle.Bold);
                     }
                 }
                 lineCounter++;
@@ -194,7 +194,11 @@ namespace log4jDigger
             {
                 logPos.StreamingHost.Reader.SetPosition(logPos.Pos);
                 String line = logPos.StreamingHost.Reader.ReadLine();
-                return line;
+
+                if (line == null)
+                    return $"{DateTime.Now:yyyy-MM-dd HH:mm:ss,fff} FATAL [log4jDigger] log4jDigger - Inconsistent Logdata, please refresh (F5)";
+                else
+                    return line;
             }
             catch
             {

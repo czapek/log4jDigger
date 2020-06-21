@@ -12,10 +12,20 @@ namespace log4jDigger.Controls
 {
     public partial class OptionsControl : UserControl
     {
+        public event EventHandler AllowRollowerCheckedChanged;
+
         public OptionsControl()
         {
             InitializeComponent();
             buttonRegister.Text = FileShellExtension.IsRegistered() ? "Unregister ShellExtensions" : "Register ShellExtensions";
+        }
+
+        public bool IsAllowRollower
+        {
+            get
+            {
+                return checkBoxAllowRollower.Checked;
+            }
         }
 
         private void buttonRegister_Click(object sender, EventArgs e)
@@ -35,5 +45,10 @@ namespace log4jDigger.Controls
             buttonRegister.Text = FileShellExtension.IsRegistered() ? "Unregister ShellExtensions" : "Register ShellExtensions";
         }
 
+        private void checkBoxAllowRollower_CheckedChanged(object sender, EventArgs e)
+        {
+            if (AllowRollowerCheckedChanged != null)
+                AllowRollowerCheckedChanged.Invoke(this, EventArgs.Empty);
+        }
     }
 }

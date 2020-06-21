@@ -275,6 +275,7 @@ namespace log4jDigger
             this.optionsControl.Name = "optionsControl";
             this.optionsControl.Size = new System.Drawing.Size(1225, 154);
             this.optionsControl.TabIndex = 0;
+            this.optionsControl.AllowRollowerCheckedChanged += new System.EventHandler(this.optionsControl_AllowRollowerCheckedChanged);
             // 
             // openFileDialogBasket
             // 

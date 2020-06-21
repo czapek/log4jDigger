@@ -40,7 +40,7 @@ namespace log4jDigger
             selectedLogListControl = logListControlMain;
             this.Size = new Size(1600, 800);
             streamingFactory = new StreamingFactory();
-            streamingFactory.IsInConsistent += StreamingFactory_IsInConsistent;
+            streamingFactory.IsInconsistent += StreamingFactory_IsInConsistent;
             currentMainForm = this;
             workerIndex = new BackgroundWorker();
             workerIndex.WorkerReportsProgress = true;
@@ -250,10 +250,10 @@ namespace log4jDigger
                 if (tp.Name == "tabPageSearchResult")
                     ((LogListControl)tp.Controls[0]).VirtualListSize = 0;
 
-            streamingFactory.IsInConsistent -= StreamingFactory_IsInConsistent;
+            streamingFactory.IsInconsistent -= StreamingFactory_IsInConsistent;
             streamingFactory.Dispose();
             streamingFactory = new StreamingFactory();
-            streamingFactory.IsInConsistent += StreamingFactory_IsInConsistent;
+            streamingFactory.IsInconsistent += StreamingFactory_IsInConsistent;
 
             tabControlMain.TabPages.Clear();
             tabControlMain.TabPages.Add(tabPageBasket);
@@ -636,12 +636,7 @@ namespace log4jDigger
                         if (tp.Name == "tabPageSearchResult" && tp != infoTabPage)
                             ((LogListControl)tp.Controls[0]).Reload();
                 }
-            }
-            else if (e.KeyCode == Keys.F4)
-            {
-                if (streamingFactory != null)
-                    streamingFactory.ReleaseFile();
-            }
+            }           
         }
 
         public static void FlashTrayIcon()
@@ -700,6 +695,14 @@ namespace log4jDigger
                 CreateIndex();
             }
                 
+        }
+
+        private void optionsControl_AllowRollowerCheckedChanged(object sender, EventArgs e)
+        {
+            if(streamingFactory != null)
+            {
+                streamingFactory.EnableHourlyUnlock = optionsControl.IsAllowRollower;
+            }
         }
     }
 }

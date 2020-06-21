@@ -33,18 +33,19 @@ namespace log4jDigger
             IsDisposed = false;
         }
 
-        public void ReleaseFile()
+        public void DisableStream()
         {
             if (!IsDisposed)
                 Dispose();
         }
 
-        public void UnReleaseFile()
+        public void EnableStream()
         {
             if (IsDisposed)
             {
                 Stream = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 Reader = new StreamReader(Stream, Encoding.Default);
+                IsDisposed = false;
             }
         }
 

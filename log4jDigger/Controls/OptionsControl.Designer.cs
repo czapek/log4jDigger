@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.buttonRegister = new System.Windows.Forms.Button();
+            this.checkBoxAllowRollower = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonRegister
@@ -41,19 +42,35 @@
             this.buttonRegister.UseVisualStyleBackColor = true;
             this.buttonRegister.Click += new System.EventHandler(this.buttonRegister_Click);
             // 
+            // checkBoxAllowRollower
+            // 
+            this.checkBoxAllowRollower.AutoSize = true;
+            this.checkBoxAllowRollower.Checked = true;
+            this.checkBoxAllowRollower.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxAllowRollower.Location = new System.Drawing.Point(13, 72);
+            this.checkBoxAllowRollower.Name = "checkBoxAllowRollower";
+            this.checkBoxAllowRollower.Size = new System.Drawing.Size(290, 17);
+            this.checkBoxAllowRollower.TabIndex = 1;
+            this.checkBoxAllowRollower.Text = "Unlock Logfiles to enable hourly Rollower for 5 Seconds";
+            this.checkBoxAllowRollower.UseVisualStyleBackColor = true;
+            this.checkBoxAllowRollower.CheckedChanged += new System.EventHandler(this.checkBoxAllowRollower_CheckedChanged);
+            // 
             // OptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.checkBoxAllowRollower);
             this.Controls.Add(this.buttonRegister);
             this.Name = "OptionsControl";
             this.Size = new System.Drawing.Size(631, 340);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Button buttonRegister;
+        private System.Windows.Forms.CheckBox checkBoxAllowRollower;
     }
 }

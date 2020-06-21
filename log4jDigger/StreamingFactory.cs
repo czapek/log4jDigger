@@ -14,38 +14,72 @@ namespace log4jDigger
     public class StreamingFactory : IDisposable
     {
         public event EventHandler NewPositions;
-        public event EventHandler IsInConsistent;
+        public event EventHandler IsInconsistent;
         private List<StreamingHost> streamingHosts = new List<StreamingHost>();
         public List<LogPos> PositionList = new List<LogPos>();
         private bool isDisposing = false;
         private Dictionary<SearchEventArgs, List<LogPos>> searchResults = new Dictionary<SearchEventArgs, List<LogPos>>();
         private bool isBusy = false;
         private Timer pollTimer;
+        private Timer unlockTimer;
+        private bool isReleased = false;
 
         public StreamingFactory()
         {
             pollTimer = new Timer(2000);
             pollTimer.Elapsed += Timer_Elapsed;
             pollTimer.Enabled = false;
+
+            unlockTimer = new Timer(1000);
+            unlockTimer.Elapsed += UnlockTimer_Elapsed;
+            unlockTimer.Enabled = true;
+        }
+
+        public bool EnableHourlyUnlock
+        {
+            set
+            {
+                unlockTimer.Enabled = value;
+            }
+
+            get
+            {
+                return unlockTimer.Enabled;
+            }
+        }
+
+        private void UnlockTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (streamingHosts.Count == 0)
+                return;
+
+            if (!isReleased  && DateTime.Now.Second > 58 && DateTime.Now.Minute == 59) 
+            {
+                foreach (StreamingHost sh in streamingHosts)
+                    sh.DisableStream();
+
+                Debug.WriteLine("Release File to full Hour");
+                isReleased = true;
+            }
+            if (isReleased && DateTime.Now.Second > 3 && DateTime.Now.Second < 10)
+            {                
+                foreach (StreamingHost sh in streamingHosts)
+                    sh.EnableStream();
+
+                Debug.WriteLine("UnRelease File 5 Seconds later");
+                isReleased = false;
+                Poll();
+            }
         }
 
         public void RemoveSearchResult(SearchEventArgs e)
         {
             if (e != null && searchResults.ContainsKey(e))
                 searchResults.Remove(e);
-        }
-
-        public void ReleaseFile()
-        {
-            foreach (StreamingHost sh in streamingHosts)
-            {
-                sh.ReleaseFile();
-            }
-        }
+        }      
 
         public bool EnablePolling
         {
-
             get
             {
                 return pollTimer.Enabled;
@@ -59,13 +93,10 @@ namespace log4jDigger
 
         public void Poll()
         {
-            if (isBusy)
+            if (isBusy || isReleased || streamingHosts.Count == 0)
                 return;
 
             isBusy = true;
-
-            StackTrace stackTrace = new StackTrace();
-            System.Diagnostics.Debug.WriteLine(stackTrace.GetFrame(1).GetMethod().Name);
 
             long newPositions = 0;
             foreach (StreamingHost sh in streamingHosts)
@@ -111,8 +142,8 @@ namespace log4jDigger
 
         private void SetInconsistent()
         {
-            if (IsInConsistent != null)
-                IsInConsistent.Invoke(this, EventArgs.Empty);
+            if (IsInconsistent != null)
+                IsInconsistent.Invoke(this, EventArgs.Empty);
 
             EnablePolling = false;
             isBusy = false;
