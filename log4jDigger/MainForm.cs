@@ -31,6 +31,7 @@ namespace log4jDigger
         private delegate void SafeFlashTrayIcon();
         private const int BasketStateCol = 3;
         bool wasFollowing = false;
+        bool reloadSearch = false;
 
         public String[] Args;
 
@@ -275,6 +276,7 @@ namespace log4jDigger
         private void AfterInConsistent()
         {
             wasFollowing = logListControlMain.Follow;
+            reloadSearch = true;
             Clear(false);
             CreateIndex();
         }
@@ -334,6 +336,13 @@ namespace log4jDigger
 
             logListControlMain.Follow = wasFollowing;
             wasFollowing = false;
+
+            if(reloadSearch)
+                foreach (TabPage tp in tabControlMain.TabPages)
+                    if (tp.Name == "tabPageSearchResult")
+                        ((LogListControl)tp.Controls[0]).Reload();
+
+            reloadSearch = false;
         }
 
         private void WorkerIndex_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -627,7 +636,7 @@ namespace log4jDigger
                 {
                     logListControlMain.Follow = !logListControlMain.Follow;
                     foreach (TabPage tp in tabControlMain.TabPages)
-                        if (tp.Name == "tabPageSearchResult" && tp != infoTabPage)
+                        if (tp.Name == "tabPageSearchResult")
                             ((LogListControl)tp.Controls[0]).Follow = logListControlMain.Follow;
                 }
             }
@@ -636,16 +645,18 @@ namespace log4jDigger
                 if (e.Control)
                 {
                     wasFollowing = logListControlMain.Follow;
+                    reloadSearch = true;
                     Clear(false);
                     CreateIndex();
                 }
                 else if (!logListControlMain.Follow)
                 {
                     logListControlMain.Reload();
+
                     foreach (TabPage tp in tabControlMain.TabPages)
-                        if (tp.Name == "tabPageSearchResult" && tp != infoTabPage)
+                        if (tp.Name == "tabPageSearchResult")
                             ((LogListControl)tp.Controls[0]).Reload();
-                }
+                }                
             }
         }
 
