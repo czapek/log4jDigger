@@ -215,11 +215,8 @@ namespace log4jDigger.Controls
                         positionList = streamingFactory.PositionList;
                     }
 
-                    if (searchEventArgs == null)
-                    {
-                        SetPositionList(positionList);
-                        SelectIndexVisible((int)(VirtualListSize - 1));
-                    }
+                    SetPositionList(positionList);
+                    SelectIndexVisible((int)(VirtualListSize - 1));
                 }
             }
         }

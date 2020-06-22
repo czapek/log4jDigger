@@ -20,8 +20,28 @@ namespace log4jDigger.Controls
             InitializeComponent();
         }
 
-        public DateTime MaxDate { set { dateTimePickerControl.MaxDate = value; } get { return dateTimePickerControl.MaxDate; } }
-        public DateTime MinDate { set { dateTimePickerControl.MinDate = value; } get { return dateTimePickerControl.MinDate; } }
+        public DateTime MaxDate
+        {
+            set
+            {
+                if (value <= dateTimePickerControl.MinDate)
+                    dateTimePickerControl.MinDate = value.AddSeconds(-1);
+
+                    dateTimePickerControl.MaxDate = value;
+            }
+            get { return dateTimePickerControl.MaxDate; }
+        }
+        public DateTime MinDate
+        {
+            set
+            {
+                if (value >= dateTimePickerControl.MaxDate)
+                    dateTimePickerControl.MaxDate = value.AddSeconds(1);
+
+                dateTimePickerControl.MinDate = value;
+            }
+            get { return dateTimePickerControl.MinDate; }
+        }
 
         public DateTime Value
         {
