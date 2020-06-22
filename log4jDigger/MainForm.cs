@@ -30,6 +30,7 @@ namespace log4jDigger
         private static MainForm currentMainForm;
         private delegate void SafeFlashTrayIcon();
         private const int BasketStateCol = 3;
+        bool wasFollowing = false;
 
         public String[] Args;
 
@@ -208,7 +209,7 @@ namespace log4jDigger
             }
             else
             {
-                Clear();
+                Clear(true);
                 CreateIndex();
             }
         }
@@ -239,13 +240,15 @@ namespace log4jDigger
                     tp.Controls[0].Enabled = true;
         }
 
-        private void Clear()
+        private void Clear(bool removeTabs)
         {
+            logListControlMain.Follow = false;
             selectedLogListControl.Clear();
             if (workerIndex.IsBusy)
                 workerIndex.CancelAsync();
 
             logListControlMain.VirtualListSize = 0;
+
             foreach (TabPage tp in tabControlMain.TabPages)
                 if (tp.Name == "tabPageSearchResult")
                     ((LogListControl)tp.Controls[0]).VirtualListSize = 0;
@@ -255,9 +258,12 @@ namespace log4jDigger
             streamingFactory = new StreamingFactory();
             streamingFactory.IsInconsistent += StreamingFactory_IsInConsistent;
 
-            tabControlMain.TabPages.Clear();
-            tabControlMain.TabPages.Add(tabPageBasket);
-            tabControlMain.TabPages.Add(tabPageSearch);
+            if (removeTabs)
+            {
+                tabControlMain.TabPages.Clear();
+                tabControlMain.TabPages.Add(tabPageBasket);
+                tabControlMain.TabPages.Add(tabPageSearch);
+            }
         }
 
         private void StreamingFactory_IsInConsistent(object sender, EventArgs e)
@@ -268,8 +274,8 @@ namespace log4jDigger
 
         private void AfterInConsistent()
         {
-            logListControlMain.Follow = false;
-            Clear();
+            wasFollowing = logListControlMain.Follow;
+            Clear(false);
             CreateIndex();
         }
 
@@ -325,6 +331,9 @@ namespace log4jDigger
 
             EnableForIndex();
             AddInfoTabPage(-1);
+
+            logListControlMain.Follow = wasFollowing;
+            wasFollowing = false;
         }
 
         private void WorkerIndex_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -428,7 +437,7 @@ namespace log4jDigger
         private void AddInfoTabPage(int pos)
         {
             foreach (TabPage tp in tabControlMain.TabPages)
-                if (tp.Name == "tabPageInfo" && ((LoglineInfoControl)tp.Controls[0]).SelectedLine == pos)
+                if (tp.Name == "tabPageInfo" && (pos == -1 || ((LoglineInfoControl)tp.Controls[0]).SelectedLine == pos))
                     return;
 
             infoTabPage = new TabPage();
@@ -501,7 +510,7 @@ namespace log4jDigger
         private void buttonClear_Click(object sender, EventArgs e)
         {
             listViewBasket.Items.Clear();
-            Clear();
+            Clear(true);
         }
 
         private void buttonAddFiles_Click(object sender, EventArgs e)
@@ -626,7 +635,8 @@ namespace log4jDigger
             {
                 if (e.Control)
                 {
-                    Clear();
+                    wasFollowing = logListControlMain.Follow;
+                    Clear(false);
                     CreateIndex();
                 }
                 else if (!logListControlMain.Follow)
@@ -636,7 +646,7 @@ namespace log4jDigger
                         if (tp.Name == "tabPageSearchResult" && tp != infoTabPage)
                             ((LogListControl)tp.Controls[0]).Reload();
                 }
-            }           
+            }
         }
 
         public static void FlashTrayIcon()
@@ -694,12 +704,12 @@ namespace log4jDigger
                 listViewBasket.SelectedItems[0].Checked = true;
                 CreateIndex();
             }
-                
+
         }
 
         private void optionsControl_AllowRollowerCheckedChanged(object sender, EventArgs e)
         {
-            if(streamingFactory != null)
+            if (streamingFactory != null)
             {
                 streamingFactory.EnableHourlyUnlock = optionsControl.IsAllowRollower;
             }
