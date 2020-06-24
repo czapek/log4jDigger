@@ -38,6 +38,10 @@
             this.labelShortRightInfo = new System.Windows.Forms.Label();
             this.timerRepaint = new System.Windows.Forms.Timer(this.components);
             this.labelLongCenterInfo = new System.Windows.Forms.Label();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.orderByToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.durationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timestampToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listViewLog = new log4jDigger.Controls.FlickerFreeListView();
             this.columnHeaderTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLevel = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -46,16 +50,20 @@
             this.columnHeaderMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderThread = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLogSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.copyLoglinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripListView.SuspendLayout();
             this.SuspendLayout();
             // 
             // contextMenuStripListView
             // 
             this.contextMenuStripListView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyLoglinesToolStripMenuItem,
+            this.orderByToolStripMenuItem,
+            this.toolStripSeparator1,
             this.jumpToPreviousLineInOfThreadToolStripMenuItem,
             this.jumpToNextLineInOfThreadToolStripMenuItem});
             this.contextMenuStripListView.Name = "contextMenuStripListView";
-            this.contextMenuStripListView.Size = new System.Drawing.Size(305, 48);
+            this.contextMenuStripListView.Size = new System.Drawing.Size(305, 120);
             // 
             // jumpToPreviousLineInOfThreadToolStripMenuItem
             // 
@@ -108,6 +116,36 @@
             this.labelLongCenterInfo.Size = new System.Drawing.Size(780, 13);
             this.labelLongCenterInfo.TabIndex = 3;
             this.labelLongCenterInfo.Text = "LongCenterInfo";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(301, 6);
+            // 
+            // orderByToolStripMenuItem
+            // 
+            this.orderByToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.durationToolStripMenuItem,
+            this.timestampToolStripMenuItem});
+            this.orderByToolStripMenuItem.Name = "orderByToolStripMenuItem";
+            this.orderByToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.orderByToolStripMenuItem.Text = "Order by";
+            // 
+            // durationToolStripMenuItem
+            // 
+            this.durationToolStripMenuItem.Name = "durationToolStripMenuItem";
+            this.durationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.durationToolStripMenuItem.Text = "Duration";
+            this.durationToolStripMenuItem.Click += new System.EventHandler(this.durationToolStripMenuItem_Click);
+            // 
+            // timestampToolStripMenuItem
+            // 
+            this.timestampToolStripMenuItem.Checked = true;
+            this.timestampToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.timestampToolStripMenuItem.Name = "timestampToolStripMenuItem";
+            this.timestampToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.timestampToolStripMenuItem.Text = "Timestamp";
+            this.timestampToolStripMenuItem.Click += new System.EventHandler(this.timestampToolStripMenuItem_Click);
             // 
             // listViewLog
             // 
@@ -171,6 +209,13 @@
             this.columnHeaderLogSource.Text = "Logsource";
             this.columnHeaderLogSource.Width = 200;
             // 
+            // copyLoglinesToolStripMenuItem
+            // 
+            this.copyLoglinesToolStripMenuItem.Name = "copyLoglinesToolStripMenuItem";
+            this.copyLoglinesToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.copyLoglinesToolStripMenuItem.Text = "Copy Logline(s)";
+            this.copyLoglinesToolStripMenuItem.Click += new System.EventHandler(this.copyLoglinesToolStripMenuItem_Click);
+            // 
             // LogListControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,5 +249,10 @@
         private System.Windows.Forms.ToolStripMenuItem jumpToNextLineInOfThreadToolStripMenuItem;
         private System.Windows.Forms.Timer timerRepaint;
         private System.Windows.Forms.Label labelLongCenterInfo;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem orderByToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem durationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem timestampToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyLoglinesToolStripMenuItem;
     }
 }

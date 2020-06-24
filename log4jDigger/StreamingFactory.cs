@@ -393,6 +393,14 @@ namespace log4jDigger
             return false;
         }
 
+        public void Clear()
+        {
+            foreach (StreamingHost sh in streamingHosts)
+                sh.Dispose();
+
+            streamingHosts.Clear();
+        }
+
         public void Dispose()
         {
             pollTimer.Enabled = false;

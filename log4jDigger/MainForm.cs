@@ -330,6 +330,7 @@ namespace log4jDigger
         {
             List<String> fileList = (List<String>)e.Argument;
             int progress = 0;
+            streamingFactory.Clear();
             foreach (String file in fileList)
             {
                 workerIndex.ReportProgress(progress);

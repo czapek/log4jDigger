@@ -74,17 +74,9 @@ namespace log4jDigger
                 loglineObject.Level = line.Length > 29 ? line.Substring(24, 5).Trim() : String.Empty;
                 loglineObject.Timestamp = line.Length > 23 ? line.Substring(0, 23) : String.Empty;
 
-                int posMs2 = loglineObject.Message.LastIndexOf(" ms");
-                if (posMs2 > 0)
-                {
-                    int posMs1 = loglineObject.Message.LastIndexOf(" ", posMs2 - 1);
-                    String ms = loglineObject.Message.Substring(posMs1 + 1, posMs2 - posMs1 - 1);
-                    int val;
-                    if (Int32.TryParse(ms, out val))
-                    {
-                        loglineObject.Duration = val;
-                    }
-                }
+                int duration = GetDurationFromLogPos(loglineObject.Message);
+                if(duration >= 0)
+                    loglineObject.Duration = duration;                
             }
             else
             {
@@ -180,6 +172,22 @@ namespace log4jDigger
             infoTextBox.Select(0, 0);
 
             return index - (streamingFactory.PositionList[index].Order - logPos.Order);
+        }
+
+        public static int GetDurationFromLogPos(String line)
+        {
+            int posMs2 = line.LastIndexOf(" ms");
+            if (posMs2 > 0)
+            {
+                int posMs1 = line.LastIndexOf(" ", posMs2 - 1);
+                String ms = line.Substring(posMs1 + 1, posMs2 - posMs1 - 1);
+                int val;
+                if (Int32.TryParse(ms, out val))
+                {
+                    return val;
+                }
+            }
+            return -1;
         }
 
         public static string ReadLine(LogPos logPos)

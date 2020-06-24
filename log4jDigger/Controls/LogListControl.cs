@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace log4jDigger.Controls
@@ -15,6 +16,7 @@ namespace log4jDigger.Controls
         private List<LogPos> positionList;
         private delegate void SafeSetPositionList(List<LogPos> pl);
         private Object lockObject = new Object();
+        List<LogPos> backupList;
 
         public void SetStreamingFactory(StreamingFactory sf)
         {
@@ -158,6 +160,9 @@ namespace log4jDigger.Controls
             {
                 lock (lockObject)
                 {
+                    if (value)
+                        OrderByTimestamp();
+
                     if (streamingFactory != null)
                         streamingFactory.EnablePolling = value;
 
@@ -213,6 +218,7 @@ namespace log4jDigger.Controls
             {
                 lock (lockObject)
                 {
+                    OrderByTimestamp();
                     List<LogPos> positionList = null;
                     streamingFactory.Poll();
                     if (searchEventArgs != null)
@@ -271,7 +277,7 @@ namespace log4jDigger.Controls
 
         private void listViewLog_DoubleClick(object sender, EventArgs e)
         {
-            if (DoubleClickListView != null)
+            if (DoubleClickListView != null && backupList == null)
             {
                 DoubleClickListView.Invoke(this, EventArgs.Empty);
             }
@@ -292,8 +298,7 @@ namespace log4jDigger.Controls
                         ShortLeftInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0}" + llpm;
 
 
-
-                    if (SelectedIndexChangedListView != null)
+                    if (SelectedIndexChangedListView != null && backupList == null)
                     {
                         SelectedIndexChangedListView.Invoke(this, EventArgs.Empty);
                     }
@@ -462,7 +467,6 @@ namespace log4jDigger.Controls
             return Color.White;
         }
 
-
         private void timerRepaint_Tick(object sender, EventArgs e)
         {
             if (follow)
@@ -482,10 +486,83 @@ namespace log4jDigger.Controls
                 if (positionList[refreshFrom].TimeStamp < DateTime.Now.AddDays(-1))
                     return;
 
-
                 //eine Minute nach dem letzten Add zeichnen wir das Ende der liste neu, 
                 //damit die Farben des für das Alter der Logline nicht ganz falsch sind
                 listViewLog.RedrawItems(refreshFrom, positionList.Count - 1, false);
+            }
+        }
+
+        private void durationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OrderByDuration();
+        }
+
+        private void timestampToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OrderByTimestamp();
+        }
+
+        private void OrderByDuration()
+        {
+            lock (lockObject)
+            {
+                if (listViewLog.VirtualListSize > 0)
+                {
+                    if (durationToolStripMenuItem.Checked == true)
+                        return;
+
+                    timestampToolStripMenuItem.Checked = false;
+                    durationToolStripMenuItem.Checked = true;
+
+                    this.Cursor = Cursors.WaitCursor;
+                    Follow = false;
+                    backupList = positionList;
+                    positionList = positionList.OrderByDescending(x => LoglineObject.GetDurationFromLogPos(LoglineObject.ReadLine(x))).ThenBy(x => x.TimeStamp).ThenBy(x => x.Order).ToList();
+                    SelectIndexVisible(0);
+                    listViewLog.Refresh();
+                    this.Cursor = Cursors.Default;
+                }
+            }
+        }
+
+        private void OrderByTimestamp()
+        {
+            lock (lockObject)
+            {
+                if (timestampToolStripMenuItem.Checked == true)
+                    return;
+
+                timestampToolStripMenuItem.Checked = true;
+                durationToolStripMenuItem.Checked = false;
+
+                if (listViewLog.VirtualListSize > 0)
+                {
+                    this.Cursor = Cursors.WaitCursor;
+                    positionList = backupList;
+                    backupList = null;
+                    SelectIndexVisible(0);
+                    listViewLog.Refresh();
+                    this.Cursor = Cursors.Default;
+                }
+            }
+        }
+
+        private void copyLoglinesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lock (listViewLog)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (int index in listViewLog.SelectedIndices)
+                {
+                    if (positionList != null && positionList.Count > index)
+                    {
+                       sb.AppendLine(LoglineObject.ReadLine(positionList[index]));
+                    }
+                }
+
+                if (sb.Length > 0)
+                    Clipboard.SetText(sb.ToString());
+
             }
         }
     }
