@@ -31,6 +31,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.contextMenuStripListView = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.jumpToPreviousLineInOfThreadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.jumpToNextLineInOfThreadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelShortLeftInfo = new System.Windows.Forms.Label();
+            this.labelShortRightInfo = new System.Windows.Forms.Label();
+            this.timerRepaint = new System.Windows.Forms.Timer(this.components);
+            this.labelLongCenterInfo = new System.Windows.Forms.Label();
             this.listViewLog = new log4jDigger.Controls.FlickerFreeListView();
             this.columnHeaderTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLevel = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -39,14 +46,68 @@
             this.columnHeaderMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderThread = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLogSource = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.contextMenuStripListView = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.jumpToPreviousLineInOfThreadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.jumpToNextLineInOfThreadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.labelShortInfo = new System.Windows.Forms.Label();
-            this.labelLongInfo = new System.Windows.Forms.Label();
-            this.timerRepaint = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStripListView.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // contextMenuStripListView
+            // 
+            this.contextMenuStripListView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.jumpToPreviousLineInOfThreadToolStripMenuItem,
+            this.jumpToNextLineInOfThreadToolStripMenuItem});
+            this.contextMenuStripListView.Name = "contextMenuStripListView";
+            this.contextMenuStripListView.Size = new System.Drawing.Size(305, 48);
+            // 
+            // jumpToPreviousLineInOfThreadToolStripMenuItem
+            // 
+            this.jumpToPreviousLineInOfThreadToolStripMenuItem.Name = "jumpToPreviousLineInOfThreadToolStripMenuItem";
+            this.jumpToPreviousLineInOfThreadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Up)));
+            this.jumpToPreviousLineInOfThreadToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.jumpToPreviousLineInOfThreadToolStripMenuItem.Text = "Jump to previous line in of Thread";
+            this.jumpToPreviousLineInOfThreadToolStripMenuItem.Click += new System.EventHandler(this.jumpToPreviousLineInOfThreadToolStripMenuItem_Click);
+            // 
+            // jumpToNextLineInOfThreadToolStripMenuItem
+            // 
+            this.jumpToNextLineInOfThreadToolStripMenuItem.Name = "jumpToNextLineInOfThreadToolStripMenuItem";
+            this.jumpToNextLineInOfThreadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Down)));
+            this.jumpToNextLineInOfThreadToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.jumpToNextLineInOfThreadToolStripMenuItem.Text = "Jump to next line in of Thread";
+            this.jumpToNextLineInOfThreadToolStripMenuItem.Click += new System.EventHandler(this.jumpToNextLineInOfThreadToolStripMenuItem_Click);
+            // 
+            // labelShortLeftInfo
+            // 
+            this.labelShortLeftInfo.AutoSize = true;
+            this.labelShortLeftInfo.Location = new System.Drawing.Point(3, 0);
+            this.labelShortLeftInfo.Name = "labelShortLeftInfo";
+            this.labelShortLeftInfo.Size = new System.Drawing.Size(68, 13);
+            this.labelShortLeftInfo.TabIndex = 2;
+            this.labelShortLeftInfo.Text = "ShortLeftInfo";
+            // 
+            // labelShortRightInfo
+            // 
+            this.labelShortRightInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelShortRightInfo.AutoSize = true;
+            this.labelShortRightInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShortRightInfo.Location = new System.Drawing.Point(1038, 1);
+            this.labelShortRightInfo.Name = "labelShortRightInfo";
+            this.labelShortRightInfo.Size = new System.Drawing.Size(89, 13);
+            this.labelShortRightInfo.TabIndex = 2;
+            this.labelShortRightInfo.Text = "ShortRightInfo";
+            // 
+            // timerRepaint
+            // 
+            this.timerRepaint.Interval = 60000;
+            this.timerRepaint.Tick += new System.EventHandler(this.timerRepaint_Tick);
+            // 
+            // labelLongCenterInfo
+            // 
+            this.labelLongCenterInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelLongCenterInfo.AutoEllipsis = true;
+            this.labelLongCenterInfo.Location = new System.Drawing.Point(236, 0);
+            this.labelLongCenterInfo.Name = "labelLongCenterInfo";
+            this.labelLongCenterInfo.Size = new System.Drawing.Size(780, 13);
+            this.labelLongCenterInfo.TabIndex = 3;
+            this.labelLongCenterInfo.Text = "LongCenterInfo";
             // 
             // listViewLog
             // 
@@ -110,59 +171,13 @@
             this.columnHeaderLogSource.Text = "Logsource";
             this.columnHeaderLogSource.Width = 200;
             // 
-            // contextMenuStripListView
-            // 
-            this.contextMenuStripListView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.jumpToPreviousLineInOfThreadToolStripMenuItem,
-            this.jumpToNextLineInOfThreadToolStripMenuItem});
-            this.contextMenuStripListView.Name = "contextMenuStripListView";
-            this.contextMenuStripListView.Size = new System.Drawing.Size(305, 48);
-            // 
-            // jumpToPreviousLineInOfThreadToolStripMenuItem
-            // 
-            this.jumpToPreviousLineInOfThreadToolStripMenuItem.Name = "jumpToPreviousLineInOfThreadToolStripMenuItem";
-            this.jumpToPreviousLineInOfThreadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Up)));
-            this.jumpToPreviousLineInOfThreadToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            this.jumpToPreviousLineInOfThreadToolStripMenuItem.Text = "Jump to previous line in of Thread";
-            this.jumpToPreviousLineInOfThreadToolStripMenuItem.Click += new System.EventHandler(this.jumpToPreviousLineInOfThreadToolStripMenuItem_Click);
-            // 
-            // jumpToNextLineInOfThreadToolStripMenuItem
-            // 
-            this.jumpToNextLineInOfThreadToolStripMenuItem.Name = "jumpToNextLineInOfThreadToolStripMenuItem";
-            this.jumpToNextLineInOfThreadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Down)));
-            this.jumpToNextLineInOfThreadToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            this.jumpToNextLineInOfThreadToolStripMenuItem.Text = "Jump to next line in of Thread";
-            this.jumpToNextLineInOfThreadToolStripMenuItem.Click += new System.EventHandler(this.jumpToNextLineInOfThreadToolStripMenuItem_Click);
-            // 
-            // labelShortInfo
-            // 
-            this.labelShortInfo.AutoSize = true;
-            this.labelShortInfo.Location = new System.Drawing.Point(3, 0);
-            this.labelShortInfo.Name = "labelShortInfo";
-            this.labelShortInfo.Size = new System.Drawing.Size(35, 13);
-            this.labelShortInfo.TabIndex = 2;
-            this.labelShortInfo.Text = "label1";
-            // 
-            // labelLongInfo
-            // 
-            this.labelLongInfo.AutoSize = true;
-            this.labelLongInfo.Location = new System.Drawing.Point(248, 0);
-            this.labelLongInfo.Name = "labelLongInfo";
-            this.labelLongInfo.Size = new System.Drawing.Size(35, 13);
-            this.labelLongInfo.TabIndex = 2;
-            this.labelLongInfo.Text = "label1";
-            // 
-            // timerRepaint
-            // 
-            this.timerRepaint.Interval = 60000;
-            this.timerRepaint.Tick += new System.EventHandler(this.timerRepaint_Tick);
-            // 
             // LogListControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.labelLongInfo);
-            this.Controls.Add(this.labelShortInfo);
+            this.Controls.Add(this.labelLongCenterInfo);
+            this.Controls.Add(this.labelShortRightInfo);
+            this.Controls.Add(this.labelShortLeftInfo);
             this.Controls.Add(this.listViewLog);
             this.Name = "LogListControl";
             this.Size = new System.Drawing.Size(1176, 570);
@@ -182,11 +197,12 @@
         private System.Windows.Forms.ColumnHeader columnHeaderMessage;
         private System.Windows.Forms.ColumnHeader columnHeaderThread;
         private System.Windows.Forms.ColumnHeader columnHeaderLogSource;
-        private System.Windows.Forms.Label labelShortInfo;
-        private System.Windows.Forms.Label labelLongInfo;
+        private System.Windows.Forms.Label labelShortLeftInfo;
+        private System.Windows.Forms.Label labelShortRightInfo;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripListView;
         private System.Windows.Forms.ToolStripMenuItem jumpToPreviousLineInOfThreadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem jumpToNextLineInOfThreadToolStripMenuItem;
         private System.Windows.Forms.Timer timerRepaint;
+        private System.Windows.Forms.Label labelLongCenterInfo;
     }
 }

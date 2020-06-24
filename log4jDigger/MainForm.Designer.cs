@@ -88,9 +88,10 @@ namespace log4jDigger
             this.logListControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logListControlMain.Follow = false;
             this.logListControlMain.Location = new System.Drawing.Point(0, 0);
-            this.logListControlMain.LongInfo = "";
+            this.logListControlMain.LongCenterInfo = "";
             this.logListControlMain.Name = "logListControlMain";
-            this.logListControlMain.ShortInfo = "";
+            this.logListControlMain.ShortLeftInfo = "";
+            this.logListControlMain.ShortRightInfo = "";
             this.logListControlMain.Size = new System.Drawing.Size(1233, 392);
             this.logListControlMain.TabIndex = 1;
             this.logListControlMain.VirtualListSize = ((long)(0));

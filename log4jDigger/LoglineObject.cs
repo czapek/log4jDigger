@@ -118,14 +118,14 @@ namespace log4jDigger
                 if (loglineObject.Classname.EndsWith("HttpAuthInterceptor"))
                 {
                     int index1 = loglineObject.Message.LastIndexOf("):");
-                    if (index1 >= -1)
+                    if (index1 >= 0)
                     {
                         messageResult = loglineObject.Message.Substring(0, index1 + 1) + Environment.NewLine
                             + loglineObject.Message.Substring(index1 + 3);
                     }
 
                     int index2 = messageResult.IndexOf(" - ");
-                    if (index2 >= -1)
+                    if (index2 >= 0)
                     {
                         messageResult = messageResult.Substring(0, index2) + Environment.NewLine
                             + messageResult.Substring(index2 + 3);

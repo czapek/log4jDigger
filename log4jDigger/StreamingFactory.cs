@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -53,7 +54,7 @@ namespace log4jDigger
             if (streamingHosts.Count == 0)
                 return;
 
-            if (!isReleased  && DateTime.Now.Second > 58 && DateTime.Now.Minute == 59) 
+            if (!isReleased && DateTime.Now.Second > 58 && DateTime.Now.Minute == 59)
             {
                 foreach (StreamingHost sh in streamingHosts)
                     sh.DisableStream();
@@ -62,7 +63,7 @@ namespace log4jDigger
                 isReleased = true;
             }
             if (isReleased && DateTime.Now.Second > 3 && DateTime.Now.Second < 10)
-            {                
+            {
                 foreach (StreamingHost sh in streamingHosts)
                     sh.EnableStream();
 
@@ -76,7 +77,7 @@ namespace log4jDigger
         {
             if (e != null && searchResults.ContainsKey(e))
                 searchResults.Remove(e);
-        }      
+        }
 
         public bool EnablePolling
         {
@@ -402,6 +403,11 @@ namespace log4jDigger
             isDisposing = true;
             foreach (StreamingHost sh in streamingHosts)
                 sh.Dispose();
+        }
+
+        public override string ToString()
+        {
+            return String.Join(", ", streamingHosts.Select(x => Path.GetFileName(x.Filename)));
         }
     }
 }

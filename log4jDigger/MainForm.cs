@@ -112,7 +112,7 @@ namespace log4jDigger
             else
             {
                 foreach (FileInfo info in LogUtils.FindLatesLogfiles())
-                    AddToBasket(info.FullName, false);
+                    AddToBasket(info.FullName, false, false);
             }
         }
 
@@ -147,8 +147,11 @@ namespace log4jDigger
                     timerNewLogFilesAdded.Enabled = true;
                 }
             }
-            else if (args.Length == 1 && AddToBasket(args[0]))
+            else if (args.Length == 1 && AddToBasket(args[0], true, true))
+            {
+                Clear(true);
                 CreateIndex();
+            }
         }
 
         public void OnNewInstanceCreated(EventArgs e)
@@ -158,18 +161,33 @@ namespace log4jDigger
 
         private bool AddToBasket(String file)
         {
-            return AddToBasket(file, true);
+            return AddToBasket(file, true, false);
         }
 
-        private bool AddToBasket(String file, bool isChecked)
+        private bool AddToBasket(String file, bool isChecked, bool force)
         {
             if (String.IsNullOrWhiteSpace(file))
                 return false;
 
-            if (listViewBasket.Items.Cast<ListViewItem>().Any(x => x.Text == file))
-                return false;
-
             FileInfo fi = new FileInfo(file);
+            if (force && fi.Exists && fi.Length > 0)
+            {
+                foreach (ListViewItem item in listViewBasket.Items)
+                    item.Checked = false;
+            }
+
+            ListViewItem existingItem = listViewBasket.Items.Cast<ListViewItem>().FirstOrDefault(x => x.Text == file);
+            if (existingItem != null)
+            {
+                if (force)
+                {
+                    existingItem.Checked = true;
+                    return true;
+                }
+                return false;
+            }
+
+            
             if (fi.Exists && fi.Length > 0)
             {
                 ListViewItem item = new ListViewItem(file);
@@ -187,7 +205,7 @@ namespace log4jDigger
                 lvsState.Text = "added";
                 item.SubItems.Add(lvsState);
 
-                item.Checked = isChecked;
+                item.Checked = isChecked || force;
                 listViewBasket.Items.Add(item);
                 return true;
             }
@@ -327,7 +345,7 @@ namespace log4jDigger
 
         private void WorkerIndex_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            selectedLogListControl.ShortInfo = $"{streamingFactory.PositionList.Count - 1:n0} lines";
+            selectedLogListControl.ShortLeftInfo = $"{streamingFactory.PositionList.Count - 1:n0} lines";
             searchControlMain.StreamingFactory = streamingFactory;
             selectedLogListControl.SetStreamingFactory(streamingFactory);
 
@@ -337,7 +355,7 @@ namespace log4jDigger
             logListControlMain.Follow = wasFollowing;
             wasFollowing = false;
 
-            if(reloadSearch)
+            if (reloadSearch)
                 foreach (TabPage tp in tabControlMain.TabPages)
                     if (tp.Name == "tabPageSearchResult")
                         ((LogListControl)tp.Controls[0]).Reload();
@@ -374,7 +392,7 @@ namespace log4jDigger
                 noSearch = true;
                 foreach (TabPage tp in tabControlMain.TabPages)
                     if (tp.Name == "tabPageSearchResult"
-                        && ((LogListControl)tp.Controls[0]).LongInfo == e.ToString())
+                        && ((LogListControl)tp.Controls[0]).LongCenterInfo == e.ToString())
                     {
                         searchControlMain.SetProgress(100);
                         tabControlMain.SelectedTab = tp;
@@ -439,7 +457,7 @@ namespace log4jDigger
             if (llc.SelectedIndex >= 0)
             {
                 int index = llc.SelectedIndex;
-                llc.ShortInfo = $"Line {index:n0} / {llc.VirtualListSize - 1:n0} ({llc.SelectedLogPos.Order:n0})";
+                llc.ShortLeftInfo = $"Line {index:n0} / {llc.VirtualListSize - 1:n0} ({llc.SelectedLogPos.Order:n0})";
             }
         }
 
@@ -505,7 +523,6 @@ namespace log4jDigger
                 {
                     long selectedLine = LoglineObject.InfoTextFromLine(streamingFactory, index, infoControl.InfoTextBox);
                     infoControl.Tag = selectedLine;
-                    selectedLogListControl.ShortInfo = $"Line {selectedLine:n0} / {streamingFactory.PositionList.Count - 1:n0}";
 
                     if (!isFromSearchControl)
                     {
@@ -656,7 +673,7 @@ namespace log4jDigger
                     foreach (TabPage tp in tabControlMain.TabPages)
                         if (tp.Name == "tabPageSearchResult")
                             ((LogListControl)tp.Controls[0]).Reload();
-                }                
+                }
             }
         }
 

@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.CompilerServices;
 
 namespace log4jDigger.Controls
 {
@@ -23,6 +18,7 @@ namespace log4jDigger.Controls
 
         public void SetStreamingFactory(StreamingFactory sf)
         {
+            LongCenterInfo = "Digging in: " + sf.ToString();
             streamingFactory = sf;
             SetPositionList(streamingFactory.PositionList);
             streamingFactory.NewPositions += StreamingFactory_NewPositions;
@@ -39,7 +35,7 @@ namespace log4jDigger.Controls
 
         public void SetStreamingFactory(StreamingFactory sf, SearchEventArgs sea)
         {
-            LongInfo = sea.ToString();
+            LongCenterInfo = sea.ToString();
             searchEventArgs = sea;
             streamingFactory = sf;
             SetPositionList(streamingFactory.GetSearchResult(sea));
@@ -99,29 +95,42 @@ namespace log4jDigger.Controls
             }
         }
 
-        public String ShortInfo
+        public String ShortLeftInfo
         {
             set
             {
-                labelShortInfo.Text = value;
+                labelShortLeftInfo.Text = value;
             }
 
             get
             {
-                return labelShortInfo.Text;
+                return labelShortLeftInfo.Text;
             }
         }
 
-        public String LongInfo
+        public String LongCenterInfo
         {
             set
             {
-                labelLongInfo.Text = value;
+                labelLongCenterInfo.Text = value;
             }
 
             get
             {
-                return labelLongInfo.Text;
+                return labelLongCenterInfo.Text;
+            }
+        }
+
+        public String ShortRightInfo
+        {
+            set
+            {
+                labelShortRightInfo.Text = value;
+            }
+
+            get
+            {
+                return labelShortRightInfo.Text;
             }
         }
 
@@ -157,7 +166,7 @@ namespace log4jDigger.Controls
                         SelectIndexVisible((int)(listViewLog.VirtualListSize - 1));
 
                     if (searchEventArgs == null)
-                        this.LongInfo = follow ? "Follow on" : "Follow off";
+                        this.ShortRightInfo = follow ? "Follow on" : "Follow off";
                 }
             }
 
@@ -174,8 +183,8 @@ namespace log4jDigger.Controls
 
             streamingFactory.NewPositions -= StreamingFactory_NewPositions;
             VirtualListSize = 0;
-            LongInfo = "";
-            ShortInfo = "";
+            ShortRightInfo = "";
+            ShortLeftInfo = "";
         }
 
         public long VirtualListSize
@@ -274,10 +283,15 @@ namespace log4jDigger.Controls
             {
                 lock (lockObject)
                 {
+                    int logLinesPerMinute = CalculateLogLinesPerMinute();
+                    String llpm = logLinesPerMinute > 0 ? $" - [{logLinesPerMinute:n0} LPM]" : "";
+
                     if (searchEventArgs != null)
-                        ShortInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0} ({SelectedLogPos.Order:n0})";
+                        ShortLeftInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0} ({SelectedLogPos.Order:n0})" + llpm;
                     else
-                        ShortInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0}";
+                        ShortLeftInfo = $"Line {SelectedIndex:n0} / {VirtualListSize - 1:n0}" + llpm;
+
+
 
                     if (SelectedIndexChangedListView != null)
                     {
@@ -285,6 +299,30 @@ namespace log4jDigger.Controls
                     }
                 }
             }
+        }
+
+        private int CalculateLogLinesPerMinute()
+        {
+            DateTime end = positionList[SelectedIndex].TimeStamp;
+            DateTime start = end;
+            int step = 10;
+            while (SelectedIndex - step > 0)
+            {
+                start = positionList[SelectedIndex - step].TimeStamp;
+                if ((end - start).TotalMinutes > 1.0)
+                    break;
+
+                step *= 10;
+            }
+
+            int logLinesPerMinute = 0;
+            double totalMinutes = (end - start).TotalMinutes;
+            if (totalMinutes >= 1.0)
+            {
+                logLinesPerMinute = (int)((double)step / totalMinutes);
+            }
+
+            return logLinesPerMinute;
         }
 
         private void listViewLog_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
