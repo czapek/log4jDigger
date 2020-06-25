@@ -32,12 +32,20 @@ namespace log4jDigger
                 if (d.DriveType == DriveType.Fixed)
                     foreach (String logDir in logDirs)
                     {
-                        String dir = Path.Combine(d.Name, logDir);
+                        String dir = Path.Combine(d.Name, logDir);       
                         if (Directory.Exists(dir))
                         {
-                            foreach (String file in Directory.GetFiles(dir, $"*{date:yyyyMMdd_HH}"))
+                            foreach (String subDir in Directory.GetDirectories(dir))
                             {
+                                foreach (String file in Directory.GetFiles(subDir, $"*.log.{date:yyyy-MM-dd_HH}"))
+                                {
+                                    logFiles.Add(new FileInfo(file));
+                                }
+                            }
 
+                            foreach (String file in Directory.GetFiles(dir, $"*.log.{date:yyyy-MM-dd_HH}"))
+                            {
+                                logFiles.Add(new FileInfo(file));
                             }
                         }
                     }

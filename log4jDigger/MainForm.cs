@@ -775,7 +775,15 @@ namespace log4jDigger
 
         private void buttonAddTimestamp_Click(object sender, EventArgs e)
         {
-            LogUtils.FindRolloverLogfiles((DateTime)textBoxTimestamp.Tag);
+            List<FileInfo> logfiles = LogUtils.FindRolloverLogfiles((DateTime)textBoxTimestamp.Tag);
+
+            foreach (FileInfo file in logfiles)
+            {
+                AddToBasket(file.FullName);
+            }
+
+            if (checkBoxIndexAfterAdd.Checked)
+                CreateIndex();
         }
     }
 }
