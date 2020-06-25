@@ -41,6 +41,8 @@ namespace log4jDigger
 
             selectedLogListControl = logListControlMain;
             this.Size = new Size(1600, 800);
+            textBoxTimestamp.Tag = DateTime.Now.AddHours(-1);
+            textBoxTimestamp.Text = $"{DateTime.Now.AddHours(-1):yyyy-MM-dd_HH}";
             streamingFactory = new StreamingFactory();
             streamingFactory.IsInconsistent += StreamingFactory_IsInConsistent;
             currentMainForm = this;
@@ -742,6 +744,38 @@ namespace log4jDigger
             {
                 streamingFactory.EnableHourlyUnlock = optionsControl.IsAllowRollower;
             }
+        }
+
+        private void AddTimstampLookFor(int hours)
+        {
+            DateTime date = ((DateTime)textBoxTimestamp.Tag).AddHours(hours);
+            textBoxTimestamp.Tag = date;
+            textBoxTimestamp.Text = $"{date:yyyy-MM-dd_HH}";
+        }
+
+        private void buttonAddTimestampPrevDay_Click(object sender, EventArgs e)
+        {
+            AddTimstampLookFor(-24);
+        }
+
+        private void buttonAddTimestampPrevHour_Click(object sender, EventArgs e)
+        {
+            AddTimstampLookFor(-1);
+        }
+
+        private void buttonAddTimestampNextHour_Click(object sender, EventArgs e)
+        {
+            AddTimstampLookFor(1);
+        }
+
+        private void buttonAddTimestampNextDay_Click(object sender, EventArgs e)
+        {
+            AddTimstampLookFor(24);
+        }
+
+        private void buttonAddTimestamp_Click(object sender, EventArgs e)
+        {
+            LogUtils.FindRolloverLogfiles((DateTime)textBoxTimestamp.Tag);
         }
     }
 }

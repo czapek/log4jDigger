@@ -33,9 +33,14 @@ namespace log4jDigger
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.logListControlMain = new log4jDigger.Controls.LogListControl();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageBasket = new System.Windows.Forms.TabPage();
+            this.textBoxTimestamp = new System.Windows.Forms.TextBox();
+            this.buttonAddTimestamp = new System.Windows.Forms.Button();
+            this.buttonAddTimestampNextHour = new System.Windows.Forms.Button();
+            this.buttonAddTimestampNextDay = new System.Windows.Forms.Button();
+            this.buttonAddTimestampPrevHour = new System.Windows.Forms.Button();
+            this.buttonAddTimestampPrevDay = new System.Windows.Forms.Button();
             this.checkBoxIndexAfterAdd = new System.Windows.Forms.CheckBox();
             this.buttonClear = new System.Windows.Forms.Button();
             this.buttonAddFiles = new System.Windows.Forms.Button();
@@ -49,10 +54,11 @@ namespace log4jDigger
             this.createIndexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFilesFromThisFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabPageSearch = new System.Windows.Forms.TabPage();
-            this.searchControlMain = new log4jDigger.Controls.SearchControl();
             this.tabPageOptions = new System.Windows.Forms.TabPage();
-            this.optionsControl = new log4jDigger.Controls.OptionsControl();
             this.openFileDialogBasket = new System.Windows.Forms.OpenFileDialog();
+            this.logListControlMain = new log4jDigger.Controls.LogListControl();
+            this.searchControlMain = new log4jDigger.Controls.SearchControl();
+            this.optionsControl = new log4jDigger.Controls.OptionsControl();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -83,21 +89,6 @@ namespace log4jDigger
             this.splitContainer1.SplitterDistance = 392;
             this.splitContainer1.TabIndex = 1;
             // 
-            // logListControlMain
-            // 
-            this.logListControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logListControlMain.Follow = false;
-            this.logListControlMain.Location = new System.Drawing.Point(0, 0);
-            this.logListControlMain.LongCenterInfo = "";
-            this.logListControlMain.Name = "logListControlMain";
-            this.logListControlMain.ShortLeftInfo = "";
-            this.logListControlMain.ShortRightInfo = "";
-            this.logListControlMain.Size = new System.Drawing.Size(1233, 392);
-            this.logListControlMain.TabIndex = 1;
-            this.logListControlMain.VirtualListSize = ((long)(0));
-            this.logListControlMain.DoubleClickListView += new System.EventHandler(this.listViewLog_DoubleClick);
-            this.logListControlMain.SelectedIndexChangedListView += new System.EventHandler(this.logListControlMain_SelectedIndexChangedListView);
-            // 
             // tabControlMain
             // 
             this.tabControlMain.Controls.Add(this.tabPageBasket);
@@ -113,6 +104,12 @@ namespace log4jDigger
             // 
             // tabPageBasket
             // 
+            this.tabPageBasket.Controls.Add(this.textBoxTimestamp);
+            this.tabPageBasket.Controls.Add(this.buttonAddTimestamp);
+            this.tabPageBasket.Controls.Add(this.buttonAddTimestampNextHour);
+            this.tabPageBasket.Controls.Add(this.buttonAddTimestampNextDay);
+            this.tabPageBasket.Controls.Add(this.buttonAddTimestampPrevHour);
+            this.tabPageBasket.Controls.Add(this.buttonAddTimestampPrevDay);
             this.tabPageBasket.Controls.Add(this.checkBoxIndexAfterAdd);
             this.tabPageBasket.Controls.Add(this.buttonClear);
             this.tabPageBasket.Controls.Add(this.buttonAddFiles);
@@ -126,23 +123,88 @@ namespace log4jDigger
             this.tabPageBasket.Text = "Basket";
             this.tabPageBasket.UseVisualStyleBackColor = true;
             // 
+            // textBoxTimestamp
+            // 
+            this.textBoxTimestamp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBoxTimestamp.Location = new System.Drawing.Point(403, 133);
+            this.textBoxTimestamp.Name = "textBoxTimestamp";
+            this.textBoxTimestamp.ReadOnly = true;
+            this.textBoxTimestamp.Size = new System.Drawing.Size(85, 20);
+            this.textBoxTimestamp.TabIndex = 6;
+            this.textBoxTimestamp.Text = "2020-08-12_10";
+            // 
+            // buttonAddTimestamp
+            // 
+            this.buttonAddTimestamp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAddTimestamp.Location = new System.Drawing.Point(568, 131);
+            this.buttonAddTimestamp.Name = "buttonAddTimestamp";
+            this.buttonAddTimestamp.Size = new System.Drawing.Size(103, 23);
+            this.buttonAddTimestamp.TabIndex = 5;
+            this.buttonAddTimestamp.Text = "Look for Rollover";
+            this.buttonAddTimestamp.UseVisualStyleBackColor = true;
+            this.buttonAddTimestamp.Click += new System.EventHandler(this.buttonAddTimestamp_Click);
+            // 
+            // buttonAddTimestampNextHour
+            // 
+            this.buttonAddTimestampNextHour.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAddTimestampNextHour.Location = new System.Drawing.Point(489, 131);
+            this.buttonAddTimestampNextHour.Name = "buttonAddTimestampNextHour";
+            this.buttonAddTimestampNextHour.Size = new System.Drawing.Size(37, 23);
+            this.buttonAddTimestampNextHour.TabIndex = 5;
+            this.buttonAddTimestampNextHour.Text = ">";
+            this.buttonAddTimestampNextHour.UseVisualStyleBackColor = true;
+            this.buttonAddTimestampNextHour.Click += new System.EventHandler(this.buttonAddTimestampNextHour_Click);
+            // 
+            // buttonAddTimestampNextDay
+            // 
+            this.buttonAddTimestampNextDay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAddTimestampNextDay.Location = new System.Drawing.Point(526, 131);
+            this.buttonAddTimestampNextDay.Name = "buttonAddTimestampNextDay";
+            this.buttonAddTimestampNextDay.Size = new System.Drawing.Size(37, 23);
+            this.buttonAddTimestampNextDay.TabIndex = 5;
+            this.buttonAddTimestampNextDay.Text = ">>";
+            this.buttonAddTimestampNextDay.UseVisualStyleBackColor = true;
+            this.buttonAddTimestampNextDay.Click += new System.EventHandler(this.buttonAddTimestampNextDay_Click);
+            // 
+            // buttonAddTimestampPrevHour
+            // 
+            this.buttonAddTimestampPrevHour.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAddTimestampPrevHour.Location = new System.Drawing.Point(365, 131);
+            this.buttonAddTimestampPrevHour.Name = "buttonAddTimestampPrevHour";
+            this.buttonAddTimestampPrevHour.Size = new System.Drawing.Size(37, 23);
+            this.buttonAddTimestampPrevHour.TabIndex = 5;
+            this.buttonAddTimestampPrevHour.Text = "<";
+            this.buttonAddTimestampPrevHour.UseVisualStyleBackColor = true;
+            this.buttonAddTimestampPrevHour.Click += new System.EventHandler(this.buttonAddTimestampPrevHour_Click);
+            // 
+            // buttonAddTimestampPrevDay
+            // 
+            this.buttonAddTimestampPrevDay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAddTimestampPrevDay.Location = new System.Drawing.Point(328, 131);
+            this.buttonAddTimestampPrevDay.Name = "buttonAddTimestampPrevDay";
+            this.buttonAddTimestampPrevDay.Size = new System.Drawing.Size(37, 23);
+            this.buttonAddTimestampPrevDay.TabIndex = 5;
+            this.buttonAddTimestampPrevDay.Text = "<<<";
+            this.buttonAddTimestampPrevDay.UseVisualStyleBackColor = true;
+            this.buttonAddTimestampPrevDay.Click += new System.EventHandler(this.buttonAddTimestampPrevDay_Click);
+            // 
             // checkBoxIndexAfterAdd
             // 
-            this.checkBoxIndexAfterAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxIndexAfterAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxIndexAfterAdd.AutoSize = true;
             this.checkBoxIndexAfterAdd.Checked = true;
             this.checkBoxIndexAfterAdd.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxIndexAfterAdd.Location = new System.Drawing.Point(1153, 61);
+            this.checkBoxIndexAfterAdd.Location = new System.Drawing.Point(188, 136);
             this.checkBoxIndexAfterAdd.Name = "checkBoxIndexAfterAdd";
-            this.checkBoxIndexAfterAdd.Size = new System.Drawing.Size(68, 17);
+            this.checkBoxIndexAfterAdd.Size = new System.Drawing.Size(96, 17);
             this.checkBoxIndexAfterAdd.TabIndex = 3;
-            this.checkBoxIndexAfterAdd.Text = "after add";
+            this.checkBoxIndexAfterAdd.Text = "index after add";
             this.checkBoxIndexAfterAdd.UseVisualStyleBackColor = true;
             // 
             // buttonClear
             // 
-            this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClear.Location = new System.Drawing.Point(1131, 125);
+            this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonClear.Location = new System.Drawing.Point(0, 131);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(88, 23);
             this.buttonClear.TabIndex = 4;
@@ -152,8 +214,8 @@ namespace log4jDigger
             // 
             // buttonAddFiles
             // 
-            this.buttonAddFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddFiles.Location = new System.Drawing.Point(1131, 6);
+            this.buttonAddFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAddFiles.Location = new System.Drawing.Point(94, 131);
             this.buttonAddFiles.Name = "buttonAddFiles";
             this.buttonAddFiles.Size = new System.Drawing.Size(88, 23);
             this.buttonAddFiles.TabIndex = 1;
@@ -163,8 +225,8 @@ namespace log4jDigger
             // 
             // buttonCreateIndex
             // 
-            this.buttonCreateIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCreateIndex.Location = new System.Drawing.Point(1131, 35);
+            this.buttonCreateIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCreateIndex.Location = new System.Drawing.Point(1137, 131);
             this.buttonCreateIndex.Name = "buttonCreateIndex";
             this.buttonCreateIndex.Size = new System.Drawing.Size(88, 23);
             this.buttonCreateIndex.TabIndex = 2;
@@ -188,7 +250,7 @@ namespace log4jDigger
             this.listViewBasket.HideSelection = false;
             this.listViewBasket.Location = new System.Drawing.Point(0, 0);
             this.listViewBasket.Name = "listViewBasket";
-            this.listViewBasket.Size = new System.Drawing.Size(1125, 154);
+            this.listViewBasket.Size = new System.Drawing.Size(1225, 125);
             this.listViewBasket.TabIndex = 0;
             this.listViewBasket.UseCompatibleStateImageBehavior = false;
             this.listViewBasket.View = System.Windows.Forms.View.Details;
@@ -247,6 +309,37 @@ namespace log4jDigger
             this.tabPageSearch.Text = "Search";
             this.tabPageSearch.UseVisualStyleBackColor = true;
             // 
+            // tabPageOptions
+            // 
+            this.tabPageOptions.Controls.Add(this.optionsControl);
+            this.tabPageOptions.Location = new System.Drawing.Point(4, 22);
+            this.tabPageOptions.Name = "tabPageOptions";
+            this.tabPageOptions.Size = new System.Drawing.Size(1225, 154);
+            this.tabPageOptions.TabIndex = 2;
+            this.tabPageOptions.Text = "Options";
+            this.tabPageOptions.UseVisualStyleBackColor = true;
+            // 
+            // openFileDialogBasket
+            // 
+            this.openFileDialogBasket.AddExtension = false;
+            this.openFileDialogBasket.Multiselect = true;
+            this.openFileDialogBasket.Title = "Select Logfiles";
+            // 
+            // logListControlMain
+            // 
+            this.logListControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logListControlMain.Follow = false;
+            this.logListControlMain.Location = new System.Drawing.Point(0, 0);
+            this.logListControlMain.LongCenterInfo = "";
+            this.logListControlMain.Name = "logListControlMain";
+            this.logListControlMain.ShortLeftInfo = "";
+            this.logListControlMain.ShortRightInfo = "";
+            this.logListControlMain.Size = new System.Drawing.Size(1233, 392);
+            this.logListControlMain.TabIndex = 1;
+            this.logListControlMain.VirtualListSize = ((long)(0));
+            this.logListControlMain.DoubleClickListView += new System.EventHandler(this.listViewLog_DoubleClick);
+            this.logListControlMain.SelectedIndexChangedListView += new System.EventHandler(this.logListControlMain_SelectedIndexChangedListView);
+            // 
             // searchControlMain
             // 
             this.searchControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -259,16 +352,6 @@ namespace log4jDigger
             this.searchControlMain.JumpToTimeStamp += new System.EventHandler(this.searchControlMain_JumpToTimeStamp);
             this.searchControlMain.SearchEvent += new System.EventHandler<log4jDigger.SearchEventArgs>(this.searchControlMain_SearchEvent);
             // 
-            // tabPageOptions
-            // 
-            this.tabPageOptions.Controls.Add(this.optionsControl);
-            this.tabPageOptions.Location = new System.Drawing.Point(4, 22);
-            this.tabPageOptions.Name = "tabPageOptions";
-            this.tabPageOptions.Size = new System.Drawing.Size(1225, 154);
-            this.tabPageOptions.TabIndex = 2;
-            this.tabPageOptions.Text = "Options";
-            this.tabPageOptions.UseVisualStyleBackColor = true;
-            // 
             // optionsControl
             // 
             this.optionsControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -277,12 +360,6 @@ namespace log4jDigger
             this.optionsControl.Size = new System.Drawing.Size(1225, 154);
             this.optionsControl.TabIndex = 0;
             this.optionsControl.AllowRollowerCheckedChanged += new System.EventHandler(this.optionsControl_AllowRollowerCheckedChanged);
-            // 
-            // openFileDialogBasket
-            // 
-            this.openFileDialogBasket.AddExtension = false;
-            this.openFileDialogBasket.Multiselect = true;
-            this.openFileDialogBasket.Title = "Select Logfiles";
             // 
             // MainForm
             // 
@@ -334,6 +411,12 @@ namespace log4jDigger
         private System.Windows.Forms.ContextMenuStrip contextMenuStripBasket;
         private System.Windows.Forms.ToolStripMenuItem createIndexToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addFilesFromThisFolderToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBoxTimestamp;
+        private System.Windows.Forms.Button buttonAddTimestamp;
+        private System.Windows.Forms.Button buttonAddTimestampNextDay;
+        private System.Windows.Forms.Button buttonAddTimestampPrevDay;
+        private System.Windows.Forms.Button buttonAddTimestampNextHour;
+        private System.Windows.Forms.Button buttonAddTimestampPrevHour;
     }
 }
 

@@ -21,7 +21,28 @@ namespace log4jDigger
                                 logFiles.Add(new FileInfo(file));
 
 
-            return logFiles.Where(f => f.Length > 0).OrderByDescending(f => f.LastWriteTime).ToList();
+            return logFiles.Where(f => f.Exists && f.Length > 0).OrderByDescending(f => f.LastWriteTime).ToList();
+        }
+
+        public static List<FileInfo> FindRolloverLogfiles(DateTime date)
+        {
+            List<FileInfo> logFiles = new List<FileInfo>();
+
+            foreach (DriveInfo d in DriveInfo.GetDrives())
+                if (d.DriveType == DriveType.Fixed)
+                    foreach (String logDir in logDirs)
+                    {
+                        String dir = Path.Combine(d.Name, logDir);
+                        if (Directory.Exists(dir))
+                        {
+                            foreach (String file in Directory.GetFiles(dir, $"*{date:yyyyMMdd_HH}"))
+                            {
+
+                            }
+                        }
+                    }
+
+            return logFiles.Where(f => f.Exists && f.Length > 0).OrderByDescending(f => f.LastWriteTime).ToList();
         }
 
         public static String FindLatestLogDir()
