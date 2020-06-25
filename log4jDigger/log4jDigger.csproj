@@ -56,6 +56,12 @@
     <Compile Include="Controls\FlickerFreeListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\LogfileBasketControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LogfileBasketControl.Designer.cs">
+      <DependentUpon>LogfileBasketControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LoglineInfoControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -112,6 +118,9 @@
     <Compile Include="Controls\TimeControl.Designer.cs">
       <DependentUpon>TimeControl.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Controls\LogfileBasketControl.resx">
+      <DependentUpon>LogfileBasketControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\LoglineInfoControl.resx">
       <DependentUpon>LoglineInfoControl.cs</DependentUpon>
     </EmbeddedResource>

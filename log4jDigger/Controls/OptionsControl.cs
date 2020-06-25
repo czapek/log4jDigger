@@ -28,6 +28,14 @@ namespace log4jDigger.Controls
             }
         }
 
+        public bool IsBringToFront
+        {
+            get
+            {
+                return checkBoxBringToFrontafterReload.Checked;
+            }
+        }
+
         private void buttonRegister_Click(object sender, EventArgs e)
         {
             try

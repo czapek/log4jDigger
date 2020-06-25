@@ -30,6 +30,7 @@
         {
             this.buttonRegister = new System.Windows.Forms.Button();
             this.checkBoxAllowRollower = new System.Windows.Forms.CheckBox();
+            this.checkBoxBringToFrontafterReload = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // buttonRegister
@@ -55,10 +56,21 @@
             this.checkBoxAllowRollower.UseVisualStyleBackColor = true;
             this.checkBoxAllowRollower.CheckedChanged += new System.EventHandler(this.checkBoxAllowRollower_CheckedChanged);
             // 
+            // checkBoxBringToFrontafterReload
+            // 
+            this.checkBoxBringToFrontafterReload.AutoSize = true;
+            this.checkBoxBringToFrontafterReload.Location = new System.Drawing.Point(13, 95);
+            this.checkBoxBringToFrontafterReload.Name = "checkBoxBringToFrontafterReload";
+            this.checkBoxBringToFrontafterReload.Size = new System.Drawing.Size(192, 17);
+            this.checkBoxBringToFrontafterReload.TabIndex = 2;
+            this.checkBoxBringToFrontafterReload.Text = "Bring to Front after Logfile changed";
+            this.checkBoxBringToFrontafterReload.UseVisualStyleBackColor = true;
+            // 
             // OptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.checkBoxBringToFrontafterReload);
             this.Controls.Add(this.checkBoxAllowRollower);
             this.Controls.Add(this.buttonRegister);
             this.Name = "OptionsControl";
@@ -72,5 +84,6 @@
 
         private System.Windows.Forms.Button buttonRegister;
         private System.Windows.Forms.CheckBox checkBoxAllowRollower;
+        private System.Windows.Forms.CheckBox checkBoxBringToFrontafterReload;
     }
 }
