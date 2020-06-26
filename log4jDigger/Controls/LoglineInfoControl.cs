@@ -37,9 +37,9 @@ namespace log4jDigger.Controls
         }
 
         private void searchForSelectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {   
+        {
             if (SearchEvent != null && !String.IsNullOrWhiteSpace(richTextBoxInfo.SelectedText.Trim()))
-            {        
+            {
                 SearchEvent.Invoke(this, new SearchEventArgs()
                 {
                     SearchText = richTextBoxInfo.SelectedText.Trim(),
@@ -48,6 +48,14 @@ namespace log4jDigger.Controls
                     IgnoreCase = false,
                     UseRegex = false
                 });
+            }
+        }
+
+        private void copySelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrWhiteSpace(richTextBoxInfo.SelectedText.Trim()))
+            {
+                Clipboard.SetText(richTextBoxInfo.SelectedText.Trim());
             }
         }
     }

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -214,27 +215,7 @@ namespace log4jDigger
             if (line == null)
                 return false;
 
-            if (e.SearchText.Length > 0)
-            {
-                if (e.UseRegex)
-                {
-                    if (!e.SearchRegex.IsMatch(line))
-                        addLine &= false;
-                }
-                else
-                {
-                    if (e.IgnoreCase)
-                    {
-                        if (!line.ToLower().Contains(e.SearchText.ToLower()))
-                            addLine &= false;
-                    }
-                    else
-                    {
-                        if (!line.Contains(e.SearchText))
-                            addLine &= false;
-                    }
-                }
-            }
+            addLine &= SearchText(e, addLine, line);
 
             if (e.SearchDuration)
             {
@@ -257,6 +238,81 @@ namespace log4jDigger
                 else
                 {
                     addLine &= false;
+                }
+            }
+
+            if (e.OnlyLinesWithStackTrace)
+            {
+                if (logPos.Childs == null)
+                    addLine &= false;
+            }
+
+            if (!e.LevelTrace || !e.LevelDebug || !e.LevelInfo || !e.LevelWarn || !e.LevelError || !e.LevelFatal)
+            {
+                if (line.Length > 29)
+                {
+                    String level = line.Substring(24, 5);
+                    switch (level)
+                    {
+                        case "TRACE":
+                            if (!e.LevelTrace) addLine &= false;
+                            break;
+
+                        case "DEBUG":
+                            if (!e.LevelDebug) addLine &= false;
+                            break;
+
+                        case "INFO ":
+                            if (!e.LevelInfo) addLine &= false;
+                            break;
+
+                        case "WARN ":
+                            if (!e.LevelWarn) addLine &= false;
+                            break;
+
+                        case "ERROR":
+                            if (!e.LevelError) addLine &= false;
+                            break;
+
+                        case "FATAL":
+                            if (!e.LevelFatal) addLine &= false;
+                            break;
+
+                        default:
+                            addLine &= false;
+                            break;
+                    }
+                }
+                else
+                {
+                    addLine &= false;
+                }
+            }
+
+            return addLine;
+        }
+
+        private static bool SearchText(SearchEventArgs e, bool addLine, string line)
+        {
+            if (e.SearchText.Length > 0)
+            {
+                if (e.UseRegex)
+                {
+                    if (!e.SearchRegex.IsMatch(line))
+                        addLine &= false;
+                }
+                else
+                {
+                    if (e.IgnoreCase)
+                    {
+                        if (!line.ToLower().Contains(e.SearchText.ToLower()))
+                            addLine &= false;
+                    }
+                    else
+                    {
+                        if (!line.Contains(e.SearchText))
+                            addLine &= false;
+                    }
                 }
             }
 

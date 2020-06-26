@@ -31,6 +31,8 @@ namespace log4jDigger.Controls
             timerNumberValueChanged.Interval = 500;
             timerNumberValueChanged.Enabled = false;
             timerNumberValueChanged.Tick += timerNumberValueChanged_Tick;
+
+            ResetSearch();
         }
 
         public void FocusSearch()
@@ -156,7 +158,13 @@ namespace log4jDigger.Controls
             if (SearchEvent != null && (textBoxSearch.Text.Trim().Length > 0
                             || (numericUpDownDurationFrom.Value <= numericUpDownDurationTo.Value && numericUpDownDurationTo.Value > 0)
                             || (numericUpDownDurationFrom.Value > 0 && numericUpDownDurationTo.Value == 0)
-                            ))
+                            || checkBoxStackTrace.Checked
+                            || !checkBoxTrace.Checked
+                            || !checkBoxDebug.Checked
+                            || !checkBoxInfo.Checked
+                            || !checkBoxWarn.Checked
+                            || !checkBoxError.Checked
+                            || !checkBoxFatal.Checked))
             {
                 SearchEventArgs args = new SearchEventArgs()
                 {
@@ -164,19 +172,28 @@ namespace log4jDigger.Controls
                     DurationFrom = (int)numericUpDownDurationFrom.Value,
                     DurationTo = (int)numericUpDownDurationTo.Value,
                     IgnoreCase = checkBoxIgnoreCase.Checked,
-                    UseRegex = checkBoxRegex.Checked
+                    UseRegex = checkBoxRegex.Checked,
+                    OnlyLinesWithStackTrace = checkBoxStackTrace.Checked,
+                    LevelTrace = checkBoxTrace.Checked,
+                    LevelDebug = checkBoxDebug.Checked,
+                    LevelInfo = checkBoxInfo.Checked,
+                    LevelWarn = checkBoxWarn.Checked,
+                    LevelError = checkBoxError.Checked,
+                    LevelFatal = checkBoxFatal.Checked
                 };
 
                 InvokeSearch(args);
             }
         }
+
+        public void ResetSearch()
+        {
+            SetFromSearchArgs(new SearchEventArgs());
+        }
+
         public void InvokeSearch(SearchEventArgs args)
         {
-            numericUpDownDurationFrom.Value = args.DurationFrom;
-            numericUpDownDurationTo.Value = args.DurationTo;
-            textBoxSearch.Text = args.SearchText;
-            checkBoxIgnoreCase.Checked = args.IgnoreCase;
-            checkBoxRegex.Checked = args.UseRegex;
+            SetFromSearchArgs(args);
 
             buttonSearch.Text = "Abort";
             foreach (Control c in this.Controls)
@@ -186,10 +203,31 @@ namespace log4jDigger.Controls
             SearchEvent.Invoke(this, args);
         }
 
+        private void SetFromSearchArgs(SearchEventArgs args)
+        {
+            numericUpDownDurationFrom.Value = args.DurationFrom;
+            numericUpDownDurationTo.Value = args.DurationTo;
+            textBoxSearch.Text = args.SearchText;
+            checkBoxIgnoreCase.Checked = args.IgnoreCase;
+            checkBoxRegex.Checked = args.UseRegex;
+            checkBoxStackTrace.Checked = args.OnlyLinesWithStackTrace;
+            checkBoxTrace.Checked = args.LevelTrace;
+            checkBoxDebug.Checked = args.LevelDebug;
+            checkBoxInfo.Checked = args.LevelInfo;
+            checkBoxWarn.Checked = args.LevelWarn;
+            checkBoxError.Checked = args.LevelError;
+            checkBoxFatal.Checked = args.LevelFatal;
+        }
+
         private void textBoxSearch_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r')
                 Search();
+        }
+
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+            ResetSearch();
         }
     }
 }

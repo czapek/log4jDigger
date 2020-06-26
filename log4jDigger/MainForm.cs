@@ -100,6 +100,9 @@ namespace log4jDigger
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Screen screen = Screen.FromPoint(new Point(Cursor.Position.X, Cursor.Position.Y));
+            this.Location = new Point(screen.Bounds.X + 30, screen.Bounds.Y + 30);
+            this.Size = new Size(Math.Min(screen.Bounds.Width - 100, 1800), Math.Min(screen.Bounds.Height - 100, 1000));
             if (Args.Length > 0)
             {
                 ParseArgs(Args);
@@ -129,7 +132,7 @@ namespace log4jDigger
         private void BringApplicationToFront()
         {
             if (WindowState == FormWindowState.Minimized)
-                WindowState = FormWindowState.Maximized;
+                WindowState = FormWindowState.Normal;
 
             bool top = TopMost;
             TopMost = true;
@@ -209,6 +212,7 @@ namespace log4jDigger
                 tabControlMain.TabPages.Clear();
                 tabControlMain.TabPages.Add(tabPageBasket);
                 tabControlMain.TabPages.Add(tabPageSearch);
+                tabControlMain.TabPages.Add(tabPageJavaProcess);
                 tabControlMain.TabPages.Add(tabPageOptions);
             }
         }
@@ -324,6 +328,7 @@ namespace log4jDigger
         private void WorkerSearch_DoWork(object sender, DoWorkEventArgs e)
         {
             SearchEventArgs sea = (SearchEventArgs)e.Argument;
+            streamingFactory.RemoveSearchResult(sea);
             streamingFactory.Search(sea, workerSearch);
             e.Result = sea;
         }
@@ -382,7 +387,7 @@ namespace log4jDigger
         }
 
         private void InfoControl_SearchEvent(object sender, SearchEventArgs e)
-        {
+        {           
             tabControlMain.SelectedTab = tabPageSearch;
             searchControlMain.InvokeSearch(e);
         }
@@ -501,6 +506,7 @@ namespace log4jDigger
         private void tabControlClearTabs_Click(object sender, EventArgs e)
         {
             String clearString = ((MenuItem)sender).Tag as String;
+            searchControlMain.ResetSearch();
             foreach (TabPage tp in tabControlMain.TabPages)
                 if (tp.Name == clearString && tp != infoTabPage)
                 {

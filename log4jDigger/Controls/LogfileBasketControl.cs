@@ -50,13 +50,21 @@ namespace log4jDigger.Controls
             DialogResult result = openFileDialogBasket.ShowDialog();
             if (result == DialogResult.OK)
             {
+                listViewBasket.SelectedItems.Clear();
+                int count = listViewBasket.Items.Count;
                 foreach (String file in openFileDialogBasket.FileNames)
                 {
                     AddToBasket(file);
                 }
 
-                if (checkBoxIndexAfterAdd.Checked)
+                if (checkBoxIndexAfterAdd.Checked && count < listViewBasket.Items.Count)
+                {
                     CreateIndex();
+                }
+                else
+                {
+                    listViewBasket.Focus();
+                }
             }
         }
 
@@ -151,8 +159,11 @@ namespace log4jDigger.Controls
                 lvsState.Text = "added";
                 item.SubItems.Add(lvsState);
 
-                item.Checked = isChecked || force;
+                item.Checked = isChecked || force;                
                 listViewBasket.Items.Add(item);
+                item.EnsureVisible();
+                item.Selected = true;
+
                 return true;
             }
             return false;
@@ -226,13 +237,21 @@ namespace log4jDigger.Controls
         {
             List<FileInfo> logfiles = LogUtils.FindRolloverLogfiles((DateTime)textBoxTimestamp.Tag);
 
+            int count = listViewBasket.Items.Count;
+            listViewBasket.SelectedItems.Clear();
             foreach (FileInfo file in logfiles)
             {
                 AddToBasket(file.FullName);
             }
 
-            if (checkBoxIndexAfterAdd.Checked)
+            if (checkBoxIndexAfterAdd.Checked && count < listViewBasket.Items.Count)
+            {
                 CreateIndex();
+            }
+            else
+            {
+                listViewBasket.Focus();
+            }
         }
 
         private void buttonCreateIndex_Click(object sender, EventArgs e)

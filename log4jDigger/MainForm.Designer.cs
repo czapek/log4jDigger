@@ -40,6 +40,8 @@ namespace log4jDigger
             this.searchControlMain = new log4jDigger.Controls.SearchControl();
             this.tabPageOptions = new System.Windows.Forms.TabPage();
             this.optionsControl = new log4jDigger.Controls.OptionsControl();
+            this.tabPageJavaProcess = new System.Windows.Forms.TabPage();
+            this.javaProcessControl = new log4jDigger.Controls.JavaProcessControl();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -48,6 +50,7 @@ namespace log4jDigger
             this.tabPageBasket.SuspendLayout();
             this.tabPageSearch.SuspendLayout();
             this.tabPageOptions.SuspendLayout();
+            this.tabPageJavaProcess.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -88,6 +91,7 @@ namespace log4jDigger
             // 
             this.tabControlMain.Controls.Add(this.tabPageBasket);
             this.tabControlMain.Controls.Add(this.tabPageSearch);
+            this.tabControlMain.Controls.Add(this.tabPageJavaProcess);
             this.tabControlMain.Controls.Add(this.tabPageOptions);
             this.tabControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlMain.Location = new System.Drawing.Point(0, 0);
@@ -111,6 +115,7 @@ namespace log4jDigger
             // logfileBasketControl
             // 
             this.logfileBasketControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logfileBasketControl.IsIndexing = false;
             this.logfileBasketControl.Location = new System.Drawing.Point(3, 3);
             this.logfileBasketControl.Name = "logfileBasketControl";
             this.logfileBasketControl.Size = new System.Drawing.Size(1219, 148);
@@ -159,6 +164,24 @@ namespace log4jDigger
             this.optionsControl.TabIndex = 0;
             this.optionsControl.AllowRollowerCheckedChanged += new System.EventHandler(this.optionsControl_AllowRollowerCheckedChanged);
             // 
+            // tabPageJavaProcess
+            // 
+            this.tabPageJavaProcess.Controls.Add(this.javaProcessControl);
+            this.tabPageJavaProcess.Location = new System.Drawing.Point(4, 22);
+            this.tabPageJavaProcess.Name = "tabPageJavaProcess";
+            this.tabPageJavaProcess.Size = new System.Drawing.Size(1225, 154);
+            this.tabPageJavaProcess.TabIndex = 3;
+            this.tabPageJavaProcess.Text = "Java Process";
+            this.tabPageJavaProcess.UseVisualStyleBackColor = true;
+            // 
+            // javaProcessControl
+            // 
+            this.javaProcessControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.javaProcessControl.Location = new System.Drawing.Point(0, 0);
+            this.javaProcessControl.Name = "javaProcessControl";
+            this.javaProcessControl.Size = new System.Drawing.Size(1225, 154);
+            this.javaProcessControl.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -181,6 +204,7 @@ namespace log4jDigger
             this.tabPageBasket.ResumeLayout(false);
             this.tabPageSearch.ResumeLayout(false);
             this.tabPageOptions.ResumeLayout(false);
+            this.tabPageJavaProcess.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -195,6 +219,8 @@ namespace log4jDigger
         private OptionsControl optionsControl;
         private LogListControl logListControlMain;
         private LogfileBasketControl logfileBasketControl;
+        private System.Windows.Forms.TabPage tabPageJavaProcess;
+        private JavaProcessControl javaProcessControl;
     }
 }
 

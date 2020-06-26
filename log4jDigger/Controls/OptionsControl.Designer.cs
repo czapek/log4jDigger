@@ -52,7 +52,7 @@
             this.checkBoxAllowRollower.Name = "checkBoxAllowRollower";
             this.checkBoxAllowRollower.Size = new System.Drawing.Size(290, 17);
             this.checkBoxAllowRollower.TabIndex = 1;
-            this.checkBoxAllowRollower.Text = "Unlock Logfiles to enable hourly Rollower for 5 Seconds";
+            this.checkBoxAllowRollower.Text = "Unlock Logfiles for 5 Seconds to enable hourly Rollower";
             this.checkBoxAllowRollower.UseVisualStyleBackColor = true;
             this.checkBoxAllowRollower.CheckedChanged += new System.EventHandler(this.checkBoxAllowRollower_CheckedChanged);
             // 

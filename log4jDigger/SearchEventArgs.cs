@@ -11,8 +11,15 @@ namespace log4jDigger
         public int DurationTo;
         public bool UseRegex = false;
         public bool IgnoreCase = false;
+        public bool OnlyLinesWithStackTrace = false;
         public bool SearchDuration;
         public Regex SearchRegex;
+        public bool LevelTrace = true;
+        public bool LevelDebug = true;
+        public bool LevelInfo = true;
+        public bool LevelWarn = true;
+        public bool LevelError = true;
+        public bool LevelFatal = true;
 
         public override string ToString()
         {
@@ -29,6 +36,27 @@ namespace log4jDigger
 
             if (IgnoreCase)
                 info.Add("ignore Case");
+
+            if(OnlyLinesWithStackTrace)
+                info.Add("with StackTrace");
+
+            if (!LevelTrace)
+                info.Add("no TRACE");
+
+            if (!LevelDebug)
+                info.Add("no DEBUG");
+
+            if (!LevelInfo)
+                info.Add("no INFO");
+
+            if (!LevelWarn)
+                info.Add("no WARN");
+
+            if (!LevelError)
+                info.Add("no ERROR");
+
+            if (!LevelFatal)
+                info.Add("no FATAL");
 
             return String.Join(" and ", info);
         }
