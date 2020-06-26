@@ -174,6 +174,7 @@
             this.columnHeaderLastWriteTime,
             this.columnHeaderState});
             this.listViewBasket.ContextMenuStrip = this.contextMenuStripBasket;
+            this.listViewBasket.FullRowSelect = true;
             this.listViewBasket.GridLines = true;
             this.listViewBasket.HideSelection = false;
             this.listViewBasket.Location = new System.Drawing.Point(0, 0);

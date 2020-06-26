@@ -596,5 +596,13 @@ namespace log4jDigger
         {
             Clear(true);
         }
+
+        private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(tabControlMain.SelectedTab == tabPageJavaProcess)
+            {
+                javaProcessControl.ScanProcesses();
+            }
+        }
     }
 }
