@@ -84,10 +84,8 @@ namespace log4jDigger
                 try
                 {
                     if (File.Exists(Program.WorkaroundForInitialInstancePath))
-                        foreach (String line in File.ReadAllLines(Program.WorkaroundForInitialInstancePath))
-                        {
-                            logfileBasketControl.AddToBasket(line);
-                        }
+                        logfileBasketControl.AddToBasket(File.ReadAllLines(Program.WorkaroundForInitialInstancePath));
+
                     File.Delete(Program.WorkaroundForInitialInstancePath);
                     wait = false;
                 }
@@ -287,7 +285,7 @@ namespace log4jDigger
 
         private void WorkerIndex_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            logfileBasketControl.ProgressChanged(e.ProgressPercentage);            
+            logfileBasketControl.ProgressChanged(e.ProgressPercentage);
         }
 
         bool noSearch = false;
@@ -387,7 +385,7 @@ namespace log4jDigger
         }
 
         private void InfoControl_SearchEvent(object sender, SearchEventArgs e)
-        {           
+        {
             tabControlMain.SelectedTab = tabPageSearch;
             searchControlMain.InvokeSearch(e);
         }
@@ -599,10 +597,21 @@ namespace log4jDigger
 
         private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(tabControlMain.SelectedTab == tabPageJavaProcess)
+            if (tabControlMain.SelectedTab == tabPageJavaProcess)
             {
                 javaProcessControl.ScanProcesses();
             }
+        }
+
+        private void MainForm_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+
+        private void MainForm_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            logfileBasketControl.AddToBasket(files);
         }
     }
 }

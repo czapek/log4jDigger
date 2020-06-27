@@ -116,7 +116,7 @@ namespace log4jDigger
             // logfileBasketControl
             // 
             this.logfileBasketControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logfileBasketControl.IsIndexing = false;
+            this.logfileBasketControl.IsIndexing = true;
             this.logfileBasketControl.Location = new System.Drawing.Point(3, 3);
             this.logfileBasketControl.Name = "logfileBasketControl";
             this.logfileBasketControl.Size = new System.Drawing.Size(1219, 148);
@@ -185,6 +185,7 @@ namespace log4jDigger
             // 
             // MainForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1233, 576);
@@ -196,6 +197,8 @@ namespace log4jDigger
             this.Text = "log4jDigger";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);

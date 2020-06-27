@@ -78,7 +78,7 @@ namespace log4jDigger.Controls
         }
 
         public List<String> GetFilelistForIndexing()
-        {    
+        {
             if (listViewBasket.CheckedItems.Count == 0)
                 return null;
 
@@ -111,6 +111,22 @@ namespace log4jDigger.Controls
             buttonCreateIndex.Text = "Create index";
             buttonAddFiles.Enabled = true;
             buttonClear.Enabled = true;
+        }
+
+        public void AddToBasket(String[] files)
+        {
+            int count = listViewBasket.Items.Count;
+            foreach (String file in files)
+                AddToBasket(file, true, false);
+
+            if (checkBoxIndexAfterAdd.Checked && count < listViewBasket.Items.Count)
+            {
+                CreateIndex();
+            }
+            else
+            {
+                listViewBasket.Focus();
+            }
         }
 
         public bool AddToBasket(String file)
@@ -159,10 +175,14 @@ namespace log4jDigger.Controls
                 lvsState.Text = "added";
                 item.SubItems.Add(lvsState);
 
-                item.Checked = isChecked || force;                
+                item.Checked = isChecked || force;
                 listViewBasket.Items.Add(item);
-                item.EnsureVisible();
-                item.Selected = true;
+
+                if (isChecked)
+                {
+                    item.EnsureVisible();
+                    item.Selected = true;
+                }
 
                 return true;
             }
