@@ -20,6 +20,7 @@ namespace log4jDigger
         public bool LevelWarn = true;
         public bool LevelError = true;
         public bool LevelFatal = true;
+        public LogSource LogSource;
 
         public override string ToString()
         {
@@ -57,6 +58,9 @@ namespace log4jDigger
 
             if (!LevelFatal)
                 info.Add("no FATAL");
+
+            if (LogSource != null)
+                info.Add(LogSource.ToString());
 
             return String.Join(" and ", info);
         }

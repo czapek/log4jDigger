@@ -50,6 +50,11 @@ namespace log4jDigger.Controls
                 SetControls(value.PositionList);
                 value.NewPositions -= Value_NewPositions;
                 value.NewPositions += Value_NewPositions;
+
+                comboBoxLogSource.Items.Clear();
+                comboBoxLogSource.Items.Add(new LogSource() { Servername = "All" });
+                comboBoxLogSource.Items.AddRange(value.PositionList.Select(x => x.LogSource).Distinct().OrderBy(x => x.ToString()).ToArray());
+                comboBoxLogSource.SelectedIndex = 0;
             }
         }
 
@@ -159,6 +164,7 @@ namespace log4jDigger.Controls
                             || (numericUpDownDurationFrom.Value <= numericUpDownDurationTo.Value && numericUpDownDurationTo.Value > 0)
                             || (numericUpDownDurationFrom.Value > 0 && numericUpDownDurationTo.Value == 0)
                             || checkBoxStackTrace.Checked
+                            || comboBoxLogSource.SelectedIndex > 0
                             || !checkBoxTrace.Checked
                             || !checkBoxDebug.Checked
                             || !checkBoxInfo.Checked
@@ -179,7 +185,8 @@ namespace log4jDigger.Controls
                     LevelInfo = checkBoxInfo.Checked,
                     LevelWarn = checkBoxWarn.Checked,
                     LevelError = checkBoxError.Checked,
-                    LevelFatal = checkBoxFatal.Checked
+                    LevelFatal = checkBoxFatal.Checked,
+                    LogSource = comboBoxLogSource.SelectedIndex > 0 ? (LogSource)comboBoxLogSource.SelectedItem : null
                 };
 
                 InvokeSearch(args);
@@ -217,6 +224,10 @@ namespace log4jDigger.Controls
             checkBoxWarn.Checked = args.LevelWarn;
             checkBoxError.Checked = args.LevelError;
             checkBoxFatal.Checked = args.LevelFatal;
+            if (args.LogSource == null && comboBoxLogSource.Items.Count > 0)
+                comboBoxLogSource.SelectedIndex = 0;
+            else
+                comboBoxLogSource.SelectedItem = args.LogSource;
         }
 
         private void textBoxSearch_KeyPress(object sender, KeyPressEventArgs e)

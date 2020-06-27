@@ -217,6 +217,9 @@ namespace log4jDigger
 
             addLine &= SearchText(e, addLine, line);
 
+            if (e.LogSource != null && logPos.LogSource != e.LogSource)
+                addLine &= false;
+
             if (e.SearchDuration)
             {
                 int posMs2 = line.LastIndexOf(" ms");

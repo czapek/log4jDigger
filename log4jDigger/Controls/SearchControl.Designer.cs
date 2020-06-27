@@ -50,8 +50,10 @@
             this.checkBoxWarn = new System.Windows.Forms.CheckBox();
             this.checkBoxError = new System.Windows.Forms.CheckBox();
             this.checkBoxFatal = new System.Windows.Forms.CheckBox();
-            this.timeControlJump = new log4jDigger.Controls.TimeControl();
             this.buttonReset = new System.Windows.Forms.Button();
+            this.comboBoxLogSource = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.timeControlJump = new log4jDigger.Controls.TimeControl();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownLineNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDurationFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDurationTo)).BeginInit();
@@ -77,7 +79,7 @@
             this.labelJump.Location = new System.Drawing.Point(8, 5);
             this.labelJump.Name = "labelJump";
             this.labelJump.Size = new System.Drawing.Size(67, 13);
-            this.labelJump.TabIndex = 4;
+            this.labelJump.TabIndex = 0;
             this.labelJump.Text = "Jump to Line";
             // 
             // labelTimestamp
@@ -86,7 +88,7 @@
             this.labelTimestamp.Location = new System.Drawing.Point(8, 32);
             this.labelTimestamp.Name = "labelTimestamp";
             this.labelTimestamp.Size = new System.Drawing.Size(98, 13);
-            this.labelTimestamp.TabIndex = 4;
+            this.labelTimestamp.TabIndex = 2;
             this.labelTimestamp.Text = "Jump to Timestamp";
             // 
             // buttonSearch
@@ -95,7 +97,7 @@
             this.buttonSearch.Location = new System.Drawing.Point(1072, 6);
             this.buttonSearch.Name = "buttonSearch";
             this.buttonSearch.Size = new System.Drawing.Size(95, 23);
-            this.buttonSearch.TabIndex = 500;
+            this.buttonSearch.TabIndex = 21;
             this.buttonSearch.Text = "Search";
             this.buttonSearch.UseVisualStyleBackColor = true;
             this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
@@ -106,7 +108,7 @@
             this.textBoxSearch.Location = new System.Drawing.Point(698, 8);
             this.textBoxSearch.Name = "textBoxSearch";
             this.textBoxSearch.Size = new System.Drawing.Size(278, 20);
-            this.textBoxSearch.TabIndex = 100;
+            this.textBoxSearch.TabIndex = 4;
             this.textBoxSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // contextMenuStrip1
@@ -122,7 +124,7 @@
             0,
             0,
             0});
-            this.numericUpDownDurationFrom.Location = new System.Drawing.Point(768, 32);
+            this.numericUpDownDurationFrom.Location = new System.Drawing.Point(768, 57);
             this.numericUpDownDurationFrom.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -130,7 +132,7 @@
             0});
             this.numericUpDownDurationFrom.Name = "numericUpDownDurationFrom";
             this.numericUpDownDurationFrom.Size = new System.Drawing.Size(74, 20);
-            this.numericUpDownDurationFrom.TabIndex = 110;
+            this.numericUpDownDurationFrom.TabIndex = 8;
             this.numericUpDownDurationFrom.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // numericUpDownDurationTo
@@ -141,7 +143,7 @@
             0,
             0,
             0});
-            this.numericUpDownDurationTo.Location = new System.Drawing.Point(879, 32);
+            this.numericUpDownDurationTo.Location = new System.Drawing.Point(879, 57);
             this.numericUpDownDurationTo.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -149,37 +151,37 @@
             0});
             this.numericUpDownDurationTo.Name = "numericUpDownDurationTo";
             this.numericUpDownDurationTo.Size = new System.Drawing.Size(74, 20);
-            this.numericUpDownDurationTo.TabIndex = 120;
+            this.numericUpDownDurationTo.TabIndex = 10;
             this.numericUpDownDurationTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(695, 36);
+            this.label1.Location = new System.Drawing.Point(695, 61);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(70, 13);
-            this.label1.TabIndex = 13;
+            this.label1.TabIndex = 7;
             this.label1.Text = "Duration from";
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(956, 36);
+            this.label2.Location = new System.Drawing.Point(956, 61);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(20, 13);
-            this.label2.TabIndex = 13;
+            this.label2.TabIndex = 11;
             this.label2.Text = "ms";
             // 
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(845, 36);
+            this.label3.Location = new System.Drawing.Point(845, 61);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(32, 13);
-            this.label3.TabIndex = 13;
+            this.label3.TabIndex = 9;
             this.label3.Text = "ms to";
             // 
             // checkBoxRegex
@@ -189,9 +191,10 @@
             this.checkBoxRegex.Location = new System.Drawing.Point(1084, 102);
             this.checkBoxRegex.Name = "checkBoxRegex";
             this.checkBoxRegex.Size = new System.Drawing.Size(79, 17);
-            this.checkBoxRegex.TabIndex = 140;
+            this.checkBoxRegex.TabIndex = 19;
             this.checkBoxRegex.Text = "Use Regex";
             this.checkBoxRegex.UseVisualStyleBackColor = true;
+            this.checkBoxRegex.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // checkBoxIgnoreCase
             // 
@@ -202,9 +205,10 @@
             this.checkBoxIgnoreCase.Location = new System.Drawing.Point(1084, 125);
             this.checkBoxIgnoreCase.Name = "checkBoxIgnoreCase";
             this.checkBoxIgnoreCase.Size = new System.Drawing.Size(83, 17);
-            this.checkBoxIgnoreCase.TabIndex = 141;
+            this.checkBoxIgnoreCase.TabIndex = 20;
             this.checkBoxIgnoreCase.Text = "Ignore Case";
             this.checkBoxIgnoreCase.UseVisualStyleBackColor = true;
+            this.checkBoxIgnoreCase.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // progressBarSearch
             // 
@@ -222,9 +226,10 @@
             this.checkBoxStackTrace.Location = new System.Drawing.Point(698, 125);
             this.checkBoxStackTrace.Name = "checkBoxStackTrace";
             this.checkBoxStackTrace.Size = new System.Drawing.Size(132, 17);
-            this.checkBoxStackTrace.TabIndex = 502;
+            this.checkBoxStackTrace.TabIndex = 12;
             this.checkBoxStackTrace.Text = "Lines with StackTrace";
             this.checkBoxStackTrace.UseVisualStyleBackColor = true;
+            this.checkBoxStackTrace.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // checkBoxTrace
             // 
@@ -235,9 +240,10 @@
             this.checkBoxTrace.Location = new System.Drawing.Point(992, 10);
             this.checkBoxTrace.Name = "checkBoxTrace";
             this.checkBoxTrace.Size = new System.Drawing.Size(62, 17);
-            this.checkBoxTrace.TabIndex = 502;
+            this.checkBoxTrace.TabIndex = 13;
             this.checkBoxTrace.Text = "TRACE";
             this.checkBoxTrace.UseVisualStyleBackColor = true;
+            this.checkBoxTrace.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // checkBoxDebug
             // 
@@ -248,9 +254,10 @@
             this.checkBoxDebug.Location = new System.Drawing.Point(992, 33);
             this.checkBoxDebug.Name = "checkBoxDebug";
             this.checkBoxDebug.Size = new System.Drawing.Size(64, 17);
-            this.checkBoxDebug.TabIndex = 502;
+            this.checkBoxDebug.TabIndex = 14;
             this.checkBoxDebug.Text = "DEBUG";
             this.checkBoxDebug.UseVisualStyleBackColor = true;
+            this.checkBoxDebug.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // checkBoxInfo
             // 
@@ -261,9 +268,10 @@
             this.checkBoxInfo.Location = new System.Drawing.Point(992, 56);
             this.checkBoxInfo.Name = "checkBoxInfo";
             this.checkBoxInfo.Size = new System.Drawing.Size(51, 17);
-            this.checkBoxInfo.TabIndex = 502;
+            this.checkBoxInfo.TabIndex = 15;
             this.checkBoxInfo.Text = "INFO";
             this.checkBoxInfo.UseVisualStyleBackColor = true;
+            this.checkBoxInfo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // checkBoxWarn
             // 
@@ -274,9 +282,10 @@
             this.checkBoxWarn.Location = new System.Drawing.Point(992, 79);
             this.checkBoxWarn.Name = "checkBoxWarn";
             this.checkBoxWarn.Size = new System.Drawing.Size(60, 17);
-            this.checkBoxWarn.TabIndex = 502;
+            this.checkBoxWarn.TabIndex = 16;
             this.checkBoxWarn.Text = "WARN";
             this.checkBoxWarn.UseVisualStyleBackColor = true;
+            this.checkBoxWarn.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // checkBoxError
             // 
@@ -287,9 +296,10 @@
             this.checkBoxError.Location = new System.Drawing.Point(992, 102);
             this.checkBoxError.Name = "checkBoxError";
             this.checkBoxError.Size = new System.Drawing.Size(65, 17);
-            this.checkBoxError.TabIndex = 502;
+            this.checkBoxError.TabIndex = 17;
             this.checkBoxError.Text = "ERROR";
             this.checkBoxError.UseVisualStyleBackColor = true;
+            this.checkBoxError.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // checkBoxFatal
             // 
@@ -300,9 +310,42 @@
             this.checkBoxFatal.Location = new System.Drawing.Point(992, 125);
             this.checkBoxFatal.Name = "checkBoxFatal";
             this.checkBoxFatal.Size = new System.Drawing.Size(59, 17);
-            this.checkBoxFatal.TabIndex = 502;
+            this.checkBoxFatal.TabIndex = 18;
             this.checkBoxFatal.Text = "FATAL";
             this.checkBoxFatal.UseVisualStyleBackColor = true;
+            this.checkBoxFatal.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
+            // 
+            // buttonReset
+            // 
+            this.buttonReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonReset.Location = new System.Drawing.Point(1072, 36);
+            this.buttonReset.Name = "buttonReset";
+            this.buttonReset.Size = new System.Drawing.Size(95, 23);
+            this.buttonReset.TabIndex = 22;
+            this.buttonReset.Text = "Reset";
+            this.buttonReset.UseVisualStyleBackColor = true;
+            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
+            // 
+            // comboBoxLogSource
+            // 
+            this.comboBoxLogSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxLogSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxLogSource.FormattingEnabled = true;
+            this.comboBoxLogSource.Location = new System.Drawing.Point(768, 32);
+            this.comboBoxLogSource.Name = "comboBoxLogSource";
+            this.comboBoxLogSource.Size = new System.Drawing.Size(208, 21);
+            this.comboBoxLogSource.TabIndex = 6;
+            this.comboBoxLogSource.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(695, 36);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(57, 13);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "Logsource";
             // 
             // timeControlJump
             // 
@@ -311,25 +354,15 @@
             this.timeControlJump.MinDate = new System.DateTime(1753, 1, 1, 0, 0, 0, 0);
             this.timeControlJump.Name = "timeControlJump";
             this.timeControlJump.Size = new System.Drawing.Size(358, 20);
-            this.timeControlJump.TabIndex = 2;
+            this.timeControlJump.TabIndex = 3;
             this.timeControlJump.Value = new System.DateTime(2020, 5, 25, 16, 53, 22, 0);
             this.timeControlJump.ValueChanged += new System.EventHandler(this.timeControlJump_ValueChanged);
-            // 
-            // buttonReset
-            // 
-            this.buttonReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonReset.Location = new System.Drawing.Point(1072, 36);
-            this.buttonReset.Name = "buttonReset";
-            this.buttonReset.Size = new System.Drawing.Size(95, 23);
-            this.buttonReset.TabIndex = 503;
-            this.buttonReset.Text = "Reset";
-            this.buttonReset.UseVisualStyleBackColor = true;
-            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
             // 
             // SearchControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.comboBoxLogSource);
             this.Controls.Add(this.buttonReset);
             this.Controls.Add(this.checkBoxFatal);
             this.Controls.Add(this.checkBoxError);
@@ -343,6 +376,7 @@
             this.Controls.Add(this.checkBoxRegex);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numericUpDownDurationTo);
             this.Controls.Add(this.numericUpDownDurationFrom);
@@ -386,5 +420,7 @@
         private System.Windows.Forms.CheckBox checkBoxError;
         private System.Windows.Forms.CheckBox checkBoxFatal;
         private System.Windows.Forms.Button buttonReset;
+        private System.Windows.Forms.ComboBox comboBoxLogSource;
+        private System.Windows.Forms.Label label4;
     }
 }
