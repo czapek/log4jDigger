@@ -27,7 +27,7 @@ namespace log4jDigger.Controls
 
         public void ScanProcesses()
         {
-            foreach (Process p in Process.GetProcessesByName("java").Union(Process.GetProcessesByName("javaw")))
+            foreach (Process p in Process.GetProcessesByName("java").Union(Process.GetProcessesByName("javaw").Union(Process.GetProcessesByName("tomcat9"))))
             {
                 ListViewItem item = listViewJavaProcesses.Items.Cast<ListViewItem>().FirstOrDefault(x => x.Text == p.Id.ToString());
                 if (item == null)
@@ -181,6 +181,50 @@ namespace log4jDigger.Controls
             }
         }
 
+        private void openWithJConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listViewJavaProcesses.SelectedItems.Count > 0)
+            {
+                String appPath =  FindApplication("jconsole.exe");
+                if (appPath != null)
+                {
+                    JavaProcess jp = listViewJavaProcesses.SelectedItems[0].Tag as JavaProcess;
+                    ProcessStartInfo si = new ProcessStartInfo(appPath, jp.Process.Id.ToString());
+                    Process.Start(si);                   
+                }
+            }
+        }
+
+        private void openWithVisualVMToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listViewJavaProcesses.SelectedItems.Count > 0)
+            {
+                String appPath = FindApplication("jvisualvm.exe");
+                if (appPath != null)
+                {
+                    Process.Start(appPath);
+                }
+            }
+        }
+
+        private String FindApplication(String appName)
+        {
+            String appPath = null;
+            String javaDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Java");
+            if (Directory.Exists(javaDir))
+            {
+                foreach (String subDir in Directory.GetDirectories(javaDir).OrderByDescending(x => File.GetCreationTime(x)))
+                {
+                    String applicationPath = Path.Combine(subDir, "bin\\" + appName);
+                    if (File.Exists(applicationPath))
+                    {            
+                        return appPath = applicationPath;
+                    }
+                }
+            }
+            return appPath;
+        }
+
         private class JavaProcess
         {
             public Process Process { get; private set; }
@@ -294,6 +338,6 @@ namespace log4jDigger.Controls
 
                 Paths = pathNames.Distinct().OrderBy(x => x).ToList();
             }
-        }
+        }      
     }
 }

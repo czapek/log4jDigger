@@ -43,6 +43,8 @@
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerCpu = new System.Windows.Forms.Timer(this.components);
             this.enviromentToClipoardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openWithJConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openWithVisualVMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripProcess.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -106,10 +108,12 @@
             this.contextMenuStripProcess.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startArgumentsToClipbardToolStripMenuItem,
             this.enviromentToClipoardToolStripMenuItem,
+            this.openWithJConsoleToolStripMenuItem,
+            this.openWithVisualVMToolStripMenuItem,
             this.openFolderToolStripMenuItem,
             this.refreshToolStripMenuItem});
             this.contextMenuStripProcess.Name = "contextMenuStripProcess";
-            this.contextMenuStripProcess.Size = new System.Drawing.Size(198, 114);
+            this.contextMenuStripProcess.Size = new System.Drawing.Size(198, 158);
             this.contextMenuStripProcess.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripProcess_Opening);
             // 
             // startArgumentsToClipbardToolStripMenuItem
@@ -145,6 +149,20 @@
             this.enviromentToClipoardToolStripMenuItem.Text = "Enviroment to Clipoard";
             this.enviromentToClipoardToolStripMenuItem.Click += new System.EventHandler(this.enviromentToClipoardToolStripMenuItem_Click);
             // 
+            // openWithJConsoleToolStripMenuItem
+            // 
+            this.openWithJConsoleToolStripMenuItem.Name = "openWithJConsoleToolStripMenuItem";
+            this.openWithJConsoleToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.openWithJConsoleToolStripMenuItem.Text = "Open with JConsole";
+            this.openWithJConsoleToolStripMenuItem.Click += new System.EventHandler(this.openWithJConsoleToolStripMenuItem_Click);
+            // 
+            // openWithVisualVMToolStripMenuItem
+            // 
+            this.openWithVisualVMToolStripMenuItem.Name = "openWithVisualVMToolStripMenuItem";
+            this.openWithVisualVMToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.openWithVisualVMToolStripMenuItem.Text = "Run VisualVM";
+            this.openWithVisualVMToolStripMenuItem.Click += new System.EventHandler(this.openWithVisualVMToolStripMenuItem_Click);
+            // 
             // JavaProcessControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -173,5 +191,7 @@
         private System.Windows.Forms.ColumnHeader columnHeaderCpu;
         private System.Windows.Forms.Timer timerCpu;
         private System.Windows.Forms.ToolStripMenuItem enviromentToClipoardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openWithJConsoleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openWithVisualVMToolStripMenuItem;
     }
 }
