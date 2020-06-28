@@ -18,6 +18,7 @@ namespace log4jDigger.Controls
     public partial class JavaProcessControl : UserControl
     {
         private const int COL_ARGS = 6;
+        private const int COL_CPU = 5;
 
         public JavaProcessControl()
         {
@@ -26,52 +27,92 @@ namespace log4jDigger.Controls
 
         public void ScanProcesses()
         {
-            listViewJavaProcesses.Items.Clear();
             foreach (Process p in Process.GetProcessesByName("java").Union(Process.GetProcessesByName("javaw")))
             {
-                JavaProcess jp = new JavaProcess(p);
-                ListViewItem item = new ListViewItem();
-                item.Tag = jp;
-                item.Text = jp.Process.Id.ToString();
-
-                ListViewSubItem sItemName = new ListViewSubItem();
-                sItemName.Text = jp.Process.ProcessName;
-                item.SubItems.Add(sItemName);
-
-                ListViewSubItem sItemStartTime = new ListViewSubItem();
-                try
+                ListViewItem item = listViewJavaProcesses.Items.Cast<ListViewItem>().FirstOrDefault(x => x.Text == p.Id.ToString());
+                if (item == null)
                 {
-                    sItemStartTime.Text = jp.Process.StartTime.ToString("dd.MM.yy HH:mm:ss");
+                    AddNewProcess(p);
                 }
-                catch (Exception ex)
+                else
                 {
-                    sItemStartTime.Text = ex.Message;
+                    JavaProcess jp = item.Tag as JavaProcess;
+                    jp.ScanCpu();
                 }
-                item.SubItems.Add(sItemStartTime);
-
-                ListViewSubItem sItemBytes = new ListViewSubItem();
-                sItemBytes.Text = $"Bytes";
-                item.SubItems.Add(sItemBytes);
-
-                ListViewSubItem sItemThreads = new ListViewSubItem();
-                sItemThreads.Text = $"{jp.Process.Threads.Count:n0}";
-                item.SubItems.Add(sItemThreads);
-
-                ListViewSubItem sItemCpu = new ListViewSubItem();
-                sItemCpu.Text = $"CPU";
-                item.SubItems.Add(sItemCpu);
-
-                ListViewSubItem sItemArgs = new ListViewSubItem();
-                sItemArgs.Text = jp.CommandLine;
-                item.SubItems.Add(sItemArgs);
-
-                listViewJavaProcesses.Items.Add(item);
             }
-        }       
+            timerCpu.Enabled = true;
+        }
+
+        private void AddNewProcess(Process p)
+        {
+            JavaProcess jp = new JavaProcess(p);
+            ListViewItem item = new ListViewItem();
+            item.Tag = jp;
+            item.Text = jp.Process.Id.ToString();
+
+            ListViewSubItem sItemName = new ListViewSubItem();
+            sItemName.Text = jp.Process.ProcessName;
+            item.SubItems.Add(sItemName);
+
+            ListViewSubItem sItemStartTime = new ListViewSubItem();
+            try
+            {
+                sItemStartTime.Text = jp.Process.StartTime.ToString("dd.MM.yy HH:mm:ss");
+            }
+            catch (Exception ex)
+            {
+                sItemStartTime.Text = "for local Admins";
+            }
+            item.SubItems.Add(sItemStartTime);
+
+            ListViewSubItem sItemBytes = new ListViewSubItem();
+            sItemBytes.Text = $"{jp.Process.WorkingSet64:n0}";
+            item.SubItems.Add(sItemBytes);
+
+            ListViewSubItem sItemThreads = new ListViewSubItem();
+            sItemThreads.Text = $"{jp.Process.Threads.Count:n0}";
+            item.SubItems.Add(sItemThreads);
+
+            ListViewSubItem sItemCpu = new ListViewSubItem();
+            sItemCpu.Text = $"-";
+            item.SubItems.Add(sItemCpu);
+
+            ListViewSubItem sItemArgs = new ListViewSubItem();
+            sItemArgs.Text = jp.CommandLine;
+            item.SubItems.Add(sItemArgs);
+
+            listViewJavaProcesses.Items.Add(item);
+        }
+
+        public void Disable()
+        {
+            timerCpu.Enabled = false;
+        }
 
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ScanProcesses();
+        }
+
+        private void timerCpu_Tick(object sender, EventArgs e)
+        {
+            ScanProcesses();
+            List<ListViewItem> removeList = new List<ListViewItem>();
+            foreach (ListViewItem item in listViewJavaProcesses.Items)
+            {
+                JavaProcess jp = item.Tag as JavaProcess;
+                if (jp.Process.HasExited)
+                {
+                    removeList.Add(item);
+                }
+                else
+                {
+                    item.SubItems[COL_CPU].Text = $"{jp.CpuPTotalRel} %";
+                }
+            }
+
+            foreach (ListViewItem item in removeList)
+                listViewJavaProcesses.Items.Remove(item);
         }
 
         private void contextMenuStripProcess_Opening(object sender, CancelEventArgs e)
@@ -122,18 +163,60 @@ namespace log4jDigger.Controls
             }
         }
 
+        private void enviromentToClipoardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listViewJavaProcesses.SelectedItems.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                JavaProcess jp = listViewJavaProcesses.SelectedItems[0].Tag as JavaProcess;
+                if (jp.Process.StartInfo.Environment != null)
+                {
+                    foreach (KeyValuePair<String, String> kv in jp.Process.StartInfo.Environment.OrderBy(x => x.Key))
+                    {
+                        sb.AppendLine($"{kv.Key}: {kv.Value}");
+                    }
+                }
+                if (sb.Length > 0)
+                    Clipboard.SetText(sb.ToString());
+            }
+        }
 
         private class JavaProcess
         {
             public Process Process { get; private set; }
             public String CommandLine { get; private set; }
             public List<String> Paths { get; private set; }
+            public int CpuPTotalRel { get; private set; }
+
+            private TimeSpan? lastTotalProcessorTime;
+            private DateTime lastCpuScan;
 
             public JavaProcess(Process process)
             {
                 Process = process;
+                ScanCpu();
                 CommandLine = GetCommandLine(Process) ?? "";
                 ScanProcess();
+            }
+
+            public void ScanCpu()
+            {
+                try
+                {
+                    if (lastTotalProcessorTime.HasValue)
+                    {
+                        TimeSpan difCpu = Process.TotalProcessorTime - lastTotalProcessorTime.Value;
+                        TimeSpan difTime = DateTime.Now - lastCpuScan;
+
+                        CpuPTotalRel = (int)(difCpu.TotalSeconds / difTime.TotalSeconds);
+                    }
+                    lastTotalProcessorTime = Process.TotalProcessorTime;
+                    lastCpuScan = DateTime.Now;
+                }
+                catch
+                {
+
+                }
             }
 
             private static string GetCommandLine(Process process)

@@ -18,7 +18,10 @@
                 components.Dispose();
             }
             if (this.streamingFactory != null)
+            {
+                streamingFactory.NewPositions -= StreamingFactory_NewPositions;
                 this.streamingFactory.RemoveSearchResult(searchEventArgs);
+            }
             base.Dispose(disposing);
         }
 

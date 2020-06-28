@@ -598,6 +598,10 @@ namespace log4jDigger
             {
                 javaProcessControl.ScanProcesses();
             }
+            else
+            {
+                javaProcessControl.Disable();
+            }
         }
 
         private void MainForm_DragEnter(object sender, DragEventArgs e)

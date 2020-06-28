@@ -48,7 +48,6 @@ namespace log4jDigger.Controls
                     return;
 
                 SetControls(value.PositionList);
-                value.NewPositions -= Value_NewPositions;
                 value.NewPositions += Value_NewPositions;
 
                 comboBoxLogSource.Items.Clear();

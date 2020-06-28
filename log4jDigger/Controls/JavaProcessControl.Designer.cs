@@ -33,14 +33,16 @@
             this.columnHeaderId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderStartTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderPrivateBytes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderThreads = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderCpu = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderArgs = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStripProcess = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.startArgumentsToClipbardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.columnHeaderThreads = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderPrivateBytes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderCpu = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.timerCpu = new System.Windows.Forms.Timer(this.components);
+            this.enviromentToClipoardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripProcess.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,6 +63,7 @@
             this.listViewJavaProcesses.HideSelection = false;
             this.listViewJavaProcesses.Location = new System.Drawing.Point(0, 0);
             this.listViewJavaProcesses.Name = "listViewJavaProcesses";
+            this.listViewJavaProcesses.ShowItemToolTips = true;
             this.listViewJavaProcesses.Size = new System.Drawing.Size(1111, 303);
             this.listViewJavaProcesses.TabIndex = 0;
             this.listViewJavaProcesses.UseCompatibleStateImageBehavior = false;
@@ -80,6 +83,19 @@
             this.columnHeaderStartTime.Text = "Start Time";
             this.columnHeaderStartTime.Width = 100;
             // 
+            // columnHeaderPrivateBytes
+            // 
+            this.columnHeaderPrivateBytes.Text = "Private Bytes";
+            this.columnHeaderPrivateBytes.Width = 100;
+            // 
+            // columnHeaderThreads
+            // 
+            this.columnHeaderThreads.Text = "Threads";
+            // 
+            // columnHeaderCpu
+            // 
+            this.columnHeaderCpu.Text = "CPU";
+            // 
             // columnHeaderArgs
             // 
             this.columnHeaderArgs.Text = "Start Arguments";
@@ -89,45 +105,45 @@
             // 
             this.contextMenuStripProcess.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startArgumentsToClipbardToolStripMenuItem,
+            this.enviromentToClipoardToolStripMenuItem,
             this.openFolderToolStripMenuItem,
             this.refreshToolStripMenuItem});
             this.contextMenuStripProcess.Name = "contextMenuStripProcess";
-            this.contextMenuStripProcess.Size = new System.Drawing.Size(196, 70);
+            this.contextMenuStripProcess.Size = new System.Drawing.Size(198, 114);
             this.contextMenuStripProcess.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripProcess_Opening);
             // 
             // startArgumentsToClipbardToolStripMenuItem
             // 
             this.startArgumentsToClipbardToolStripMenuItem.Name = "startArgumentsToClipbardToolStripMenuItem";
-            this.startArgumentsToClipbardToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.startArgumentsToClipbardToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.startArgumentsToClipbardToolStripMenuItem.Text = "Arguments to Clipbard";
             this.startArgumentsToClipbardToolStripMenuItem.Click += new System.EventHandler(this.startArgumentsToClipbardToolStripMenuItem_Click);
             // 
             // openFolderToolStripMenuItem
             // 
             this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
-            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.openFolderToolStripMenuItem.Text = "Open Folder";
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
             this.refreshToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
-            // columnHeaderThreads
+            // timerCpu
             // 
-            this.columnHeaderThreads.Text = "Threads";
+            this.timerCpu.Interval = 1000;
+            this.timerCpu.Tick += new System.EventHandler(this.timerCpu_Tick);
             // 
-            // columnHeaderPrivateBytes
+            // enviromentToClipoardToolStripMenuItem
             // 
-            this.columnHeaderPrivateBytes.Text = "Private Bytes";
-            this.columnHeaderPrivateBytes.Width = 100;
-            // 
-            // columnHeaderCpu
-            // 
-            this.columnHeaderCpu.Text = "CPU";
+            this.enviromentToClipoardToolStripMenuItem.Name = "enviromentToClipoardToolStripMenuItem";
+            this.enviromentToClipoardToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.enviromentToClipoardToolStripMenuItem.Text = "Enviroment to Clipoard";
+            this.enviromentToClipoardToolStripMenuItem.Click += new System.EventHandler(this.enviromentToClipoardToolStripMenuItem_Click);
             // 
             // JavaProcessControl
             // 
@@ -155,5 +171,7 @@
         private System.Windows.Forms.ColumnHeader columnHeaderPrivateBytes;
         private System.Windows.Forms.ColumnHeader columnHeaderThreads;
         private System.Windows.Forms.ColumnHeader columnHeaderCpu;
+        private System.Windows.Forms.Timer timerCpu;
+        private System.Windows.Forms.ToolStripMenuItem enviromentToClipoardToolStripMenuItem;
     }
 }

@@ -187,8 +187,7 @@ namespace log4jDigger.Controls
         {
             if (streamingFactory == null)
                 return;
-
-            streamingFactory.NewPositions -= StreamingFactory_NewPositions;
+            
             VirtualListSize = 0;
             ShortRightInfo = "";
             ShortLeftInfo = "";
