@@ -20,9 +20,7 @@ namespace log4jDigger.Controls
 
         public void SetStreamingFactory(StreamingFactory sf)
         {
-            LongCenterInfo = "Digging in: " + sf.ToString();
             streamingFactory = sf;
-            SetPositionList(streamingFactory.PositionList);
             streamingFactory.NewPositions += StreamingFactory_NewPositions;
 
             contextMenuStripListView.Items.Add(new ToolStripSeparator());
@@ -35,13 +33,17 @@ namespace log4jDigger.Controls
             contextMenuStripListView.Items.Add(itemF5);
         }
 
-        public void SetStreamingFactory(StreamingFactory sf, SearchEventArgs sea)
+        public void ResetSetStreamingFactory()
+        {
+            LongCenterInfo = "Digging in: " + streamingFactory.ToString();
+            SetPositionList(streamingFactory.PositionList);
+        }
+
+        public void SetSearchResult(SearchEventArgs sea)
         {
             LongCenterInfo = sea.ToString();
             searchEventArgs = sea;
-            streamingFactory = sf;
-            SetPositionList(streamingFactory.GetSearchResult(sea));
-            streamingFactory.NewPositions += StreamingFactory_NewPositions;
+            SetPositionList(streamingFactory.GetSearchResult(sea));            
         }
 
         private void ItemF5_Click(object sender, EventArgs e)
@@ -556,7 +558,7 @@ namespace log4jDigger.Controls
                 {
                     if (positionList != null && positionList.Count > index)
                     {
-                       sb.AppendLine(LoglineObject.ReadLine(positionList[index]));
+                        sb.AppendLine(LoglineObject.ReadLine(positionList[index]));
                     }
                 }
 

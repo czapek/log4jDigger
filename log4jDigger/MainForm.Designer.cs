@@ -116,7 +116,7 @@ namespace log4jDigger
             // logfileBasketControl
             // 
             this.logfileBasketControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logfileBasketControl.IsIndexing = true;
+            this.logfileBasketControl.IsIndexing = false;
             this.logfileBasketControl.Location = new System.Drawing.Point(3, 3);
             this.logfileBasketControl.Name = "logfileBasketControl";
             this.logfileBasketControl.Size = new System.Drawing.Size(1219, 148);

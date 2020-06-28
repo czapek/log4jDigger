@@ -208,9 +208,9 @@ namespace log4jDigger
                 else
                     return line;
             }
-            catch
+            catch(Exception ex)
             {
-                return $"{DateTime.Now:yyyy-MM-dd HH:mm:ss,fff} FATAL [log4jDigger] log4jDigger - Error resolving Logline from Stream";
+                return $"{DateTime.Now:yyyy-MM-dd HH:mm:ss,fff} FATAL [log4jDigger] log4jDigger - Error resolving Logline from Stream: " + ex.Message;
             }
         }
 

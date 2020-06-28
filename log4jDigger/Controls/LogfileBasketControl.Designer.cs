@@ -48,13 +48,15 @@
             this.createIndexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFilesFromThisFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialogBasket = new System.Windows.Forms.OpenFileDialog();
+            this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unCheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripBasket.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxTimestamp
             // 
-            this.textBoxTimestamp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxTimestamp.Location = new System.Drawing.Point(403, 205);
+            this.textBoxTimestamp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxTimestamp.Location = new System.Drawing.Point(902, 206);
             this.textBoxTimestamp.Name = "textBoxTimestamp";
             this.textBoxTimestamp.ReadOnly = true;
             this.textBoxTimestamp.Size = new System.Drawing.Size(85, 20);
@@ -63,8 +65,8 @@
             // 
             // buttonAddTimestamp
             // 
-            this.buttonAddTimestamp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonAddTimestamp.Location = new System.Drawing.Point(568, 203);
+            this.buttonAddTimestamp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAddTimestamp.Location = new System.Drawing.Point(1067, 204);
             this.buttonAddTimestamp.Name = "buttonAddTimestamp";
             this.buttonAddTimestamp.Size = new System.Drawing.Size(103, 23);
             this.buttonAddTimestamp.TabIndex = 12;
@@ -74,8 +76,8 @@
             // 
             // buttonAddTimestampNextHour
             // 
-            this.buttonAddTimestampNextHour.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonAddTimestampNextHour.Location = new System.Drawing.Point(489, 203);
+            this.buttonAddTimestampNextHour.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAddTimestampNextHour.Location = new System.Drawing.Point(988, 204);
             this.buttonAddTimestampNextHour.Name = "buttonAddTimestampNextHour";
             this.buttonAddTimestampNextHour.Size = new System.Drawing.Size(37, 23);
             this.buttonAddTimestampNextHour.TabIndex = 13;
@@ -85,8 +87,8 @@
             // 
             // buttonAddTimestampNextDay
             // 
-            this.buttonAddTimestampNextDay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonAddTimestampNextDay.Location = new System.Drawing.Point(526, 203);
+            this.buttonAddTimestampNextDay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAddTimestampNextDay.Location = new System.Drawing.Point(1025, 204);
             this.buttonAddTimestampNextDay.Name = "buttonAddTimestampNextDay";
             this.buttonAddTimestampNextDay.Size = new System.Drawing.Size(37, 23);
             this.buttonAddTimestampNextDay.TabIndex = 14;
@@ -96,8 +98,8 @@
             // 
             // buttonAddTimestampPrevHour
             // 
-            this.buttonAddTimestampPrevHour.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonAddTimestampPrevHour.Location = new System.Drawing.Point(365, 203);
+            this.buttonAddTimestampPrevHour.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAddTimestampPrevHour.Location = new System.Drawing.Point(864, 204);
             this.buttonAddTimestampPrevHour.Name = "buttonAddTimestampPrevHour";
             this.buttonAddTimestampPrevHour.Size = new System.Drawing.Size(37, 23);
             this.buttonAddTimestampPrevHour.TabIndex = 15;
@@ -107,8 +109,8 @@
             // 
             // buttonAddTimestampPrevDay
             // 
-            this.buttonAddTimestampPrevDay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonAddTimestampPrevDay.Location = new System.Drawing.Point(328, 203);
+            this.buttonAddTimestampPrevDay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAddTimestampPrevDay.Location = new System.Drawing.Point(827, 204);
             this.buttonAddTimestampPrevDay.Name = "buttonAddTimestampPrevDay";
             this.buttonAddTimestampPrevDay.Size = new System.Drawing.Size(37, 23);
             this.buttonAddTimestampPrevDay.TabIndex = 16;
@@ -122,7 +124,7 @@
             this.checkBoxIndexAfterAdd.AutoSize = true;
             this.checkBoxIndexAfterAdd.Checked = true;
             this.checkBoxIndexAfterAdd.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxIndexAfterAdd.Location = new System.Drawing.Point(188, 208);
+            this.checkBoxIndexAfterAdd.Location = new System.Drawing.Point(274, 209);
             this.checkBoxIndexAfterAdd.Name = "checkBoxIndexAfterAdd";
             this.checkBoxIndexAfterAdd.Size = new System.Drawing.Size(96, 17);
             this.checkBoxIndexAfterAdd.TabIndex = 10;
@@ -132,7 +134,7 @@
             // buttonClear
             // 
             this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonClear.Location = new System.Drawing.Point(0, 203);
+            this.buttonClear.Location = new System.Drawing.Point(90, 204);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(88, 23);
             this.buttonClear.TabIndex = 11;
@@ -143,7 +145,7 @@
             // buttonAddFiles
             // 
             this.buttonAddFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonAddFiles.Location = new System.Drawing.Point(94, 203);
+            this.buttonAddFiles.Location = new System.Drawing.Point(181, 204);
             this.buttonAddFiles.Name = "buttonAddFiles";
             this.buttonAddFiles.Size = new System.Drawing.Size(88, 23);
             this.buttonAddFiles.TabIndex = 8;
@@ -153,8 +155,8 @@
             // 
             // buttonCreateIndex
             // 
-            this.buttonCreateIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCreateIndex.Location = new System.Drawing.Point(1081, 204);
+            this.buttonCreateIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonCreateIndex.Location = new System.Drawing.Point(-1, 204);
             this.buttonCreateIndex.Name = "buttonCreateIndex";
             this.buttonCreateIndex.Size = new System.Drawing.Size(88, 23);
             this.buttonCreateIndex.TabIndex = 9;
@@ -179,7 +181,7 @@
             this.listViewBasket.HideSelection = false;
             this.listViewBasket.Location = new System.Drawing.Point(0, 0);
             this.listViewBasket.Name = "listViewBasket";
-            this.listViewBasket.Size = new System.Drawing.Size(1169, 197);
+            this.listViewBasket.Size = new System.Drawing.Size(1169, 200);
             this.listViewBasket.TabIndex = 7;
             this.listViewBasket.UseCompatibleStateImageBehavior = false;
             this.listViewBasket.View = System.Windows.Forms.View.Details;
@@ -210,9 +212,11 @@
             // 
             this.contextMenuStripBasket.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createIndexToolStripMenuItem,
-            this.addFilesFromThisFolderToolStripMenuItem});
+            this.addFilesFromThisFolderToolStripMenuItem,
+            this.checkAllToolStripMenuItem,
+            this.unCheckAllToolStripMenuItem});
             this.contextMenuStripBasket.Name = "contextMenuStripBasket";
-            this.contextMenuStripBasket.Size = new System.Drawing.Size(280, 48);
+            this.contextMenuStripBasket.Size = new System.Drawing.Size(280, 92);
             // 
             // createIndexToolStripMenuItem
             // 
@@ -233,6 +237,23 @@
             this.openFileDialogBasket.AddExtension = false;
             this.openFileDialogBasket.Multiselect = true;
             this.openFileDialogBasket.Title = "Select Logfiles";
+            // 
+            // checkAllToolStripMenuItem
+            // 
+            this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
+            this.checkAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(279, 22);
+            this.checkAllToolStripMenuItem.Text = "Check all and Index";
+            this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
+            // 
+            // unCheckAllToolStripMenuItem
+            // 
+            this.unCheckAllToolStripMenuItem.Name = "unCheckAllToolStripMenuItem";
+            this.unCheckAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.A)));
+            this.unCheckAllToolStripMenuItem.Size = new System.Drawing.Size(279, 22);
+            this.unCheckAllToolStripMenuItem.Text = "Uncheck all";
+            this.unCheckAllToolStripMenuItem.Click += new System.EventHandler(this.unCheckAllToolStripMenuItem_Click);
             // 
             // LogfileBasketControl
             // 
@@ -278,5 +299,7 @@
         private System.Windows.Forms.ToolStripMenuItem createIndexToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addFilesFromThisFolderToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogBasket;
+        private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem unCheckAllToolStripMenuItem;
     }
 }

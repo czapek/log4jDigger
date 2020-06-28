@@ -8,7 +8,7 @@ namespace log4jDigger
 {
     public class StreamingHost : IDisposable
     {
-        public FileStream Stream;
+        public FileStream Stream { get; private set; }
         public StreamReader Reader;
         public String Filename;
         private long lastFileLength;
@@ -50,7 +50,7 @@ namespace log4jDigger
         }
 
         public int HasChanged()
-        { 
+        {
             return new FileInfo(Filename).Length.CompareTo(lastFileLength);
         }
 
@@ -59,6 +59,11 @@ namespace log4jDigger
             Stream.Dispose();
             Reader.Dispose();
             IsDisposed = true;
-        }    
+        }
+
+        public override string ToString()
+        {
+            return $"Pos: {LastMaxPosition:n0} - {Filename}";
+        }
     }
 }

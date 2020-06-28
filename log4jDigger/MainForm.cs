@@ -41,6 +41,7 @@ namespace log4jDigger
             selectedLogListControl = logListControlMain;
             this.Size = new Size(1600, 800);
             streamingFactory = new StreamingFactory();
+            selectedLogListControl.SetStreamingFactory(streamingFactory);
             streamingFactory.IsInconsistent += StreamingFactory_IsInConsistent;
             currentMainForm = this;
             workerIndex = new BackgroundWorker();
@@ -149,7 +150,8 @@ namespace log4jDigger
             }
             else if (args.Length == 1 && logfileBasketControl.AddToBasket(args[0], true, true))
             {
-                Clear(true);
+                Clear();
+                RemoveTabs();
                 CreateIndex();
             }
         }
@@ -171,6 +173,7 @@ namespace log4jDigger
 
             this.Cursor = Cursors.WaitCursor;
             logfileBasketControl.DisableForIndex();
+            logListControlMain.Clear();
             logListControlMain.Enabled = false;
             foreach (TabPage tp in tabControlMain.TabPages)
                 if (tp.Name != "tabPageBasket")
@@ -187,7 +190,7 @@ namespace log4jDigger
                     tp.Controls[0].Enabled = true;
         }
 
-        private void Clear(bool removeTabs)
+        private void Clear()
         {
             logListControlMain.Follow = false;
             selectedLogListControl.Clear();
@@ -195,24 +198,16 @@ namespace log4jDigger
                 workerIndex.CancelAsync();
 
             logListControlMain.VirtualListSize = 0;
+            streamingFactory.Clear();
+        }
 
-            foreach (TabPage tp in tabControlMain.TabPages)
-                if (tp.Name == "tabPageSearchResult")
-                    ((LogListControl)tp.Controls[0]).VirtualListSize = 0;
-
-            streamingFactory.IsInconsistent -= StreamingFactory_IsInConsistent;
-            streamingFactory.Dispose();
-            streamingFactory = new StreamingFactory();
-            streamingFactory.IsInconsistent += StreamingFactory_IsInConsistent;
-
-            if (removeTabs)
-            {
-                tabControlMain.TabPages.Clear();
-                tabControlMain.TabPages.Add(tabPageBasket);
-                tabControlMain.TabPages.Add(tabPageSearch);
-                tabControlMain.TabPages.Add(tabPageJavaProcess);
-                tabControlMain.TabPages.Add(tabPageOptions);
-            }
+        private void RemoveTabs()
+        {
+            tabControlMain.TabPages.Clear();
+            tabControlMain.TabPages.Add(tabPageBasket);
+            tabControlMain.TabPages.Add(tabPageSearch);
+            tabControlMain.TabPages.Add(tabPageJavaProcess);
+            tabControlMain.TabPages.Add(tabPageOptions);
         }
 
         private void StreamingFactory_IsInConsistent(object sender, EventArgs e)
@@ -225,7 +220,7 @@ namespace log4jDigger
         {
             wasFollowing = logListControlMain.Follow;
             reloadSearch = true;
-            Clear(false);
+            Clear();
             CreateIndex();
         }
 
@@ -240,8 +235,9 @@ namespace log4jDigger
 
             if (fileList != null && fileList.Count > 0)
             {
-                workerIndex.RunWorkerAsync(fileList);
                 DisableForIndex();
+                RemoveTabs();
+                workerIndex.RunWorkerAsync(fileList);                
             }
         }
 
@@ -249,7 +245,7 @@ namespace log4jDigger
         {
             List<String> fileList = (List<String>)e.Argument;
             int progress = 0;
-            streamingFactory.Clear();
+            streamingFactory.Clear(fileList);
             foreach (String file in fileList)
             {
                 workerIndex.ReportProgress(progress);
@@ -267,7 +263,7 @@ namespace log4jDigger
         {
             selectedLogListControl.ShortLeftInfo = $"{streamingFactory.PositionList.Count - 1:n0} lines";
             searchControlMain.StreamingFactory = streamingFactory;
-            selectedLogListControl.SetStreamingFactory(streamingFactory);
+            selectedLogListControl.ResetSetStreamingFactory();
 
             EnableForIndex();
             AddInfoTabPage(-1);
@@ -344,6 +340,7 @@ namespace log4jDigger
             {
                 TabPage tp = new TabPage();
                 LogListControl llc = new LogListControl();
+                llc.SetStreamingFactory(streamingFactory);
                 tp.Controls.Add(llc);
                 llc.Dock = DockStyle.Fill;
                 llc.DoubleClickListView += Llc_DoubleClickListView;
@@ -354,7 +351,7 @@ namespace log4jDigger
                 tp.UseVisualStyleBackColor = true;
                 tabControlMain.TabPages.Add(tp);
                 tabControlMain.SelectedTab = tp;
-                llc.SetStreamingFactory(streamingFactory, sea);
+                llc.SetSearchResult(sea);
             }
 
             logListControlMain.Enabled = true;
@@ -536,7 +533,7 @@ namespace log4jDigger
                 {
                     wasFollowing = logListControlMain.Follow;
                     reloadSearch = true;
-                    Clear(false);
+                    Clear();
                     CreateIndex();
                 }
                 else if (!logListControlMain.Follow)
@@ -584,15 +581,15 @@ namespace log4jDigger
                 logfileBasketControl.IsIndexing = false;
             }
             else
-            {
-                Clear(true);
+            {                
                 CreateIndex();
             }
         }
 
         private void logfileBasketControl_ClearEvent(object sender, EventArgs e)
         {
-            Clear(true);
+            Clear();
+            RemoveTabs();
         }
 
         private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)

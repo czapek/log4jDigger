@@ -324,7 +324,9 @@ namespace log4jDigger
 
         public void AddNewFile(String filename, BackgroundWorker worker, int progess)
         {
-            StreamingHost sh = new StreamingHost(filename);
+            StreamingHost sh = streamingHosts.FirstOrDefault(x => x.Filename == filename);
+            if (sh == null)
+                sh = new StreamingHost(filename);
             streamingHosts.Add(sh);
 
             ScanFile(worker, progess, sh);
@@ -342,6 +344,7 @@ namespace log4jDigger
                 int lastRelPos = 0;
                 sh.Reader.SetPosition(sh.LastMaxPosition);
                 long position = sh.Reader.GetPosition();
+
                 LogPos lastMainLog = sh.LastMaxLogPosition;
                 while ((line = sh.Reader.ReadLine()) != null)
                 {
@@ -457,7 +460,23 @@ namespace log4jDigger
             foreach (StreamingHost sh in streamingHosts)
                 sh.Dispose();
 
+            PositionList.Clear();
             streamingHosts.Clear();
+            searchResults.Clear();
+            EnablePolling = false;
+        }
+
+        public void Clear(List<String> fileList)
+        {
+            foreach (StreamingHost sh in streamingHosts.Where(x => !fileList.Contains(x.Filename)))
+            {
+                PositionList.RemoveAll(x => x.StreamingHost == sh);
+                sh.Dispose();
+            }
+
+            streamingHosts.RemoveAll(x => !fileList.Contains(x.Filename));
+            searchResults.Clear();
+            EnablePolling = false;
         }
 
         public void Dispose()

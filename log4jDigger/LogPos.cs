@@ -13,6 +13,11 @@ namespace log4jDigger
         public LogSource LogSource;
         public List<LogPos> Childs;
         public LogPos Parent;
+
+        public override string ToString()
+        {
+            return $"{TimeStamp:yyyy-MM-dd HH:mm:ss,fff} {Pos:n0} ({Order:n0}) {LogSource}";
+        }
     }
 
     public enum LoglineType

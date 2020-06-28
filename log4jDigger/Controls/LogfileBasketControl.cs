@@ -101,16 +101,39 @@ namespace log4jDigger.Controls
 
         public void DisableForIndex()
         {
+            EnableControls(this, false);
+            EnableSpecificControl(buttonCreateIndex);
             buttonCreateIndex.Text = "Abort";
-            buttonAddFiles.Enabled = false;
-            buttonClear.Enabled = false;
         }
 
         public void EnableForIndex()
         {
+            EnableControls(this, true);
             buttonCreateIndex.Text = "Create index";
-            buttonAddFiles.Enabled = true;
-            buttonClear.Enabled = true;
+            foreach (ListViewItem item in listViewBasket.Items)
+            {
+                String text = item.SubItems[BasketStateCol].Text;
+                if (text.StartsWith("pending") || text.StartsWith("index"))
+                    item.SubItems[BasketStateCol].Text = "aborted";
+            }
+        }
+
+        private void EnableControls(Control con, bool enable)
+        {
+            foreach (Control c in con.Controls)
+            {
+                EnableControls(c, enable);
+            }
+            con.Enabled = enable;
+        }
+
+        private void EnableSpecificControl(Control con)
+        {
+            if (con != null)
+            {
+                con.Enabled = true;
+                EnableSpecificControl(con.Parent);
+            }
         }
 
         public void AddToBasket(String[] files)
@@ -309,6 +332,20 @@ namespace log4jDigger.Controls
         private void addFilesFromThisFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddFilesFromSelectedFolder();
+        }
+
+        private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listViewBasket.Items)
+                item.Checked = true;
+
+            CreateIndex();
+        }
+
+        private void unCheckAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listViewBasket.Items)
+                item.Checked = false;
         }
     }
 }
