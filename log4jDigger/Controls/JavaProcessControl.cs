@@ -19,6 +19,8 @@ namespace log4jDigger.Controls
     {
         private const int COL_ARGS = 6;
         private const int COL_CPU = 5;
+        private const int COL_THREAD = 4;
+        private const int COL_PRIVATEBYTES = 3;
 
         public JavaProcessControl()
         {
@@ -61,7 +63,7 @@ namespace log4jDigger.Controls
             }
             catch (Exception ex)
             {
-                sItemStartTime.Text = "for local Admins";
+                sItemStartTime.Text = "no access";
             }
             item.SubItems.Add(sItemStartTime);
 
@@ -100,14 +102,24 @@ namespace log4jDigger.Controls
             List<ListViewItem> removeList = new List<ListViewItem>();
             foreach (ListViewItem item in listViewJavaProcesses.Items)
             {
-                JavaProcess jp = item.Tag as JavaProcess;
-                if (jp.Process.HasExited)
+                try
                 {
-                    removeList.Add(item);
+                    JavaProcess jp = item.Tag as JavaProcess;
+                    if (jp.Process.HasExited)
+                    {
+                        removeList.Add(item);
+                    }
+                    else
+                    {
+                        jp.Process.Refresh();
+                        item.SubItems[COL_CPU].Text = $"{jp.CpuPTotalRel} %";
+                        item.SubItems[COL_PRIVATEBYTES].Text = $"{jp.Process.WorkingSet64:n0}";
+                        item.SubItems[COL_THREAD].Text = $"{jp.Process.Threads.Count:n0}";
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    item.SubItems[COL_CPU].Text = $"{jp.CpuPTotalRel} %";
+                    item.SubItems[COL_ARGS].Text = "run log4jDigger as Administrator: " + ex.Message;
                 }
             }
 
@@ -185,12 +197,12 @@ namespace log4jDigger.Controls
         {
             if (listViewJavaProcesses.SelectedItems.Count > 0)
             {
-                String appPath =  FindApplication("jconsole.exe");
+                String appPath = FindApplication("jconsole.exe");
                 if (appPath != null)
                 {
                     JavaProcess jp = listViewJavaProcesses.SelectedItems[0].Tag as JavaProcess;
                     ProcessStartInfo si = new ProcessStartInfo(appPath, jp.Process.Id.ToString());
-                    Process.Start(si);                   
+                    Process.Start(si);
                 }
             }
         }
@@ -217,7 +229,7 @@ namespace log4jDigger.Controls
                 {
                     String applicationPath = Path.Combine(subDir, "bin\\" + appName);
                     if (File.Exists(applicationPath))
-                    {            
+                    {
                         return appPath = applicationPath;
                     }
                 }
@@ -251,8 +263,8 @@ namespace log4jDigger.Controls
                     {
                         TimeSpan difCpu = Process.TotalProcessorTime - lastTotalProcessorTime.Value;
                         TimeSpan difTime = DateTime.Now - lastCpuScan;
-
-                        CpuPTotalRel = (int)(difCpu.TotalSeconds / difTime.TotalSeconds);
+                        double CPUUsage = (Process.TotalProcessorTime.TotalMilliseconds - lastTotalProcessorTime.Value.TotalMilliseconds) / DateTime.Now.Subtract(lastCpuScan).TotalMilliseconds / Convert.ToDouble(Environment.ProcessorCount);
+                        CpuPTotalRel = (int)(CPUUsage * 100);
                     }
                     lastTotalProcessorTime = Process.TotalProcessorTime;
                     lastCpuScan = DateTime.Now;
@@ -338,6 +350,6 @@ namespace log4jDigger.Controls
 
                 Paths = pathNames.Distinct().OrderBy(x => x).ToList();
             }
-        }      
+        }
     }
 }
