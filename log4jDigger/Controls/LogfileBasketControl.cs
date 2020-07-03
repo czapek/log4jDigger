@@ -45,6 +45,18 @@ namespace log4jDigger.Controls
             }
         }
 
+        public bool ForceFollow
+        {
+            get;
+            set;
+        }
+
+        public bool ForceMaximize
+        {
+            get;
+            set;
+        }
+
         public void AddFiles()
         {
             DialogResult result = openFileDialogBasket.ShowDialog();
@@ -309,7 +321,11 @@ namespace log4jDigger.Controls
                 if (e.Control)
                     AddFilesFromSelectedFolder();
                 else
+                {
+                    ForceFollow = false;
+                    ForceMaximize = false;
                     CreateIndex();
+                }
             }
         }
 
@@ -317,8 +333,15 @@ namespace log4jDigger.Controls
         {
             if (listViewBasket.SelectedItems.Count == 1)
             {
-                foreach (ListViewItem item in listViewBasket.CheckedItems)
-                    item.Checked = false;
+                if (!ModifierKeys.HasFlag(Keys.Control))
+                {
+                    foreach (ListViewItem item in listViewBasket.CheckedItems)
+                        item.Checked = false;
+                }
+
+                ForceFollow = true;
+                ForceMaximize = true;
+
                 listViewBasket.SelectedItems[0].Checked = true;
                 CreateIndex();
             }

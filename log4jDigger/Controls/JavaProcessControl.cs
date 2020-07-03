@@ -202,6 +202,7 @@ namespace log4jDigger.Controls
                 {
                     JavaProcess jp = listViewJavaProcesses.SelectedItems[0].Tag as JavaProcess;
                     ProcessStartInfo si = new ProcessStartInfo(appPath, jp.Process.Id.ToString());
+                   // si.Verb = "runas";
                     Process.Start(si);
                 }
             }
@@ -214,7 +215,9 @@ namespace log4jDigger.Controls
                 String appPath = FindApplication("jvisualvm.exe");
                 if (appPath != null)
                 {
-                    Process.Start(appPath);
+                    ProcessStartInfo si = new ProcessStartInfo(appPath);
+                    //si.Verb = "runas";
+                    Process.Start(si);
                 }
             }
         }

@@ -131,7 +131,7 @@ namespace log4jDigger
         private void BringApplicationToFront()
         {
             if (WindowState == FormWindowState.Minimized)
-                WindowState = FormWindowState.Normal;
+                WindowState = FormWindowState.Maximized;
 
             bool top = TopMost;
             TopMost = true;
@@ -266,17 +266,23 @@ namespace log4jDigger
             selectedLogListControl.ResetSetStreamingFactory();
 
             EnableForIndex();
-            AddInfoTabPage(-1);
-
-            logListControlMain.Follow = wasFollowing;
-            wasFollowing = false;
+            AddInfoTabPage(-1);            
 
             if (reloadSearch)
                 foreach (TabPage tp in tabControlMain.TabPages)
                     if (tp.Name == "tabPageSearchResult")
                         ((LogListControl)tp.Controls[0]).Reload();
 
+            logListControlMain.Follow = wasFollowing || logfileBasketControl.ForceFollow;
+
+            if (logfileBasketControl.ForceMaximize && this.WindowState != FormWindowState.Maximized)
+                this.WindowState = FormWindowState.Maximized;
+
+
+            wasFollowing = false;
             reloadSearch = false;
+            logfileBasketControl.ForceFollow = false;
+            logfileBasketControl.ForceMaximize = false;
         }
 
         private void WorkerIndex_ProgressChanged(object sender, ProgressChangedEventArgs e)
