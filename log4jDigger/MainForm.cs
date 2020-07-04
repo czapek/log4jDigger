@@ -41,7 +41,7 @@ namespace log4jDigger
             selectedLogListControl = logListControlMain;
             this.Size = new Size(1600, 800);
             streamingFactory = new StreamingFactory();
-            selectedLogListControl.SetStreamingFactory(streamingFactory);
+            selectedLogListControl.SetStreamingFactory(streamingFactory, null);
             streamingFactory.IsInconsistent += StreamingFactory_IsInConsistent;
             currentMainForm = this;
             workerIndex = new BackgroundWorker();
@@ -350,7 +350,7 @@ namespace log4jDigger
             {
                 TabPage tp = new TabPage();
                 LogListControl llc = new LogListControl();
-                llc.SetStreamingFactory(streamingFactory);
+                
                 tp.Controls.Add(llc);
                 llc.Dock = DockStyle.Fill;
                 llc.DoubleClickListView += Llc_DoubleClickListView;
@@ -360,8 +360,8 @@ namespace log4jDigger
                 tp.Text = "Search Result";
                 tp.UseVisualStyleBackColor = true;
                 tabControlMain.TabPages.Add(tp);
-                tabControlMain.SelectedTab = tp;
-                llc.SetSearchResult(sea);
+                tabControlMain.SelectedTab = tp;     
+                llc.SetStreamingFactory(streamingFactory, sea);
             }
 
             logListControlMain.Enabled = true;

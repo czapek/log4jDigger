@@ -21,51 +21,47 @@ namespace log4jDigger.Controls
         public LogListControl()
         {
             InitializeComponent();
-
-            //workaround: VS Designer nach VS Update kaputt
-            contextMenuStripListView.Items.Add(new ToolStripSeparator());
-            ToolStripMenuItem bookmarkDoubleClickAltToolStripMenuItem = new ToolStripMenuItem();
-            bookmarkDoubleClickAltToolStripMenuItem.Name = "bookmarkDoubleClickAltToolStripMenuItem";
-            bookmarkDoubleClickAltToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            bookmarkDoubleClickAltToolStripMenuItem.Text = "Bookmark                             DoubleClick+Alt";
-            bookmarkDoubleClickAltToolStripMenuItem.Click += new System.EventHandler(this.bookmarkDoubleclickAltToolStripMenuItem_Click);
-            contextMenuStripListView.Items.Add(bookmarkDoubleClickAltToolStripMenuItem);
-
-            ToolStripMenuItem detailsDoubleClickToolStripMenuItem = new ToolStripMenuItem();
-            detailsDoubleClickToolStripMenuItem.Name = "bookmarkDoubleClickAltToolStripMenuItem";
-            detailsDoubleClickToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            detailsDoubleClickToolStripMenuItem.Text = "Show Details                             DoubleClick";
-            detailsDoubleClickToolStripMenuItem.Click += DetailsDoubleClickToolStripMenuItem_Click;
-            contextMenuStripListView.Items.Add(detailsDoubleClickToolStripMenuItem);
         }
 
 
-        public void SetStreamingFactory(StreamingFactory sf)
+        public void SetStreamingFactory(StreamingFactory sf, SearchEventArgs sea)
         {
             streamingFactory = sf;
             streamingFactory.NewPositions += StreamingFactory_NewPositions;
 
-            contextMenuStripListView.Items.Add(new ToolStripSeparator());
-            ToolStripMenuItem item = new ToolStripMenuItem("Toggle Follow       F");
-            item.Click += Item_Click;
-            contextMenuStripListView.Items.Add(item);
+            if (sea == null)
+            {
+                contextMenuStripListView.Items.Add(new ToolStripSeparator());
+                ToolStripMenuItem bookmarkDoubleClickAltToolStripMenuItem = new ToolStripMenuItem("Bookmark                             DoubleClick+Alt");
+                bookmarkDoubleClickAltToolStripMenuItem.Click += new System.EventHandler(this.bookmarkDoubleclickAltToolStripMenuItem_Click);
+                contextMenuStripListView.Items.Add(bookmarkDoubleClickAltToolStripMenuItem);
 
-            ToolStripMenuItem itemF5 = new ToolStripMenuItem("Reload       F5");
-            itemF5.Click += ItemF5_Click;
-            contextMenuStripListView.Items.Add(itemF5);
+                ToolStripMenuItem detailsDoubleClickToolStripMenuItem = new ToolStripMenuItem("Show Details                             DoubleClick");
+                detailsDoubleClickToolStripMenuItem.Click += DetailsDoubleClickToolStripMenuItem_Click;
+                contextMenuStripListView.Items.Add(detailsDoubleClickToolStripMenuItem);
+
+                contextMenuStripListView.Items.Add(new ToolStripSeparator());
+                
+                ToolStripMenuItem item = new ToolStripMenuItem("Toggle Follow       F");
+                item.Click += Item_Click;
+                contextMenuStripListView.Items.Add(item);
+
+                ToolStripMenuItem itemF5 = new ToolStripMenuItem("Reload       F5");
+                itemF5.Click += ItemF5_Click;
+                contextMenuStripListView.Items.Add(itemF5);   
+            }
+            else
+            {
+                LongCenterInfo = sea.ToString();
+                searchEventArgs = sea;
+                SetPositionList(streamingFactory.GetSearchResult(sea));
+            }
         }
 
         public void ResetSetStreamingFactory()
         {
             LongCenterInfo = "Digging in: " + streamingFactory.ToString();
             SetPositionList(streamingFactory.PositionList);
-        }
-
-        public void SetSearchResult(SearchEventArgs sea)
-        {
-            LongCenterInfo = sea.ToString();
-            searchEventArgs = sea;
-            SetPositionList(streamingFactory.GetSearchResult(sea));
         }
 
         private void ItemF5_Click(object sender, EventArgs e)
