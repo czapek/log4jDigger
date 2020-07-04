@@ -20,7 +20,7 @@ namespace log4jDigger
     {
         private BackgroundWorker workerIndex;
         private BackgroundWorker workerSearch;
-        private TabPage infoTabPage;
+        private TabPage tabPageInfo;
         private LoglineInfoControl infoControl;
         private StreamingFactory streamingFactory;
         private delegate void OnMessageReceivedInvoker(MessageEventArgs e);
@@ -275,8 +275,12 @@ namespace log4jDigger
 
             logListControlMain.Follow = wasFollowing || logfileBasketControl.ForceFollow;
 
-            if (logfileBasketControl.ForceMaximize && this.WindowState != FormWindowState.Maximized)
-                this.WindowState = FormWindowState.Maximized;
+            if (logfileBasketControl.ForceMaximize)
+            {
+                tabControlMain.SelectedTab = tabPageInfo;
+                if (this.WindowState != FormWindowState.Maximized)
+                    this.WindowState = FormWindowState.Maximized;
+            }
 
 
             wasFollowing = false;
@@ -372,19 +376,19 @@ namespace log4jDigger
                 if (tp.Name == "tabPageInfo" && (pos == -1 || ((LoglineInfoControl)tp.Controls[0]).SelectedLine == pos))
                     return tp;
 
-            infoTabPage = new TabPage();
+            tabPageInfo = new TabPage();
             infoControl = new LoglineInfoControl();
             infoControl.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            infoTabPage.Controls.Add(infoControl);
+            tabPageInfo.Controls.Add(infoControl);
             infoControl.Dock = DockStyle.Fill;
             infoControl.SearchEvent += InfoControl_SearchEvent;
-            infoTabPage.Name = "tabPageInfo";
-            infoTabPage.Padding = new System.Windows.Forms.Padding(3);
-            infoTabPage.Text = "Details";
-            infoTabPage.UseVisualStyleBackColor = true;
-            tabControlMain.TabPages.Add(infoTabPage);
+            tabPageInfo.Name = "tabPageInfo";
+            tabPageInfo.Padding = new System.Windows.Forms.Padding(3);
+            tabPageInfo.Text = "Details";
+            tabPageInfo.UseVisualStyleBackColor = true;
+            tabControlMain.TabPages.Add(tabPageInfo);
             SelectedIndexChanged(selectedLogListControl);
-            return infoTabPage;
+            return tabPageInfo;
         }
 
         private void InfoControl_SearchEvent(object sender, SearchEventArgs e)
@@ -404,10 +408,10 @@ namespace log4jDigger
             if (e.Bookmark)
             {
                 LogListControl llc = sender as LogListControl;
-                TabPage oldPage = infoTabPage;
+                TabPage oldPage = tabPageInfo;
                 TabPage selectedPage = AddInfoTabPage(llc.SelectedIndex);
 
-                if (oldPage != infoTabPage && oldPage != null)
+                if (oldPage != tabPageInfo && oldPage != null)
                 {
                     oldPage.Text = $"Bookmark {llc.SelectedIndex:n0}";
                     LoglineInfoControl llic = (LoglineInfoControl)oldPage.Controls[0];
@@ -420,7 +424,7 @@ namespace log4jDigger
             }
             else
             {
-                tabControlMain.SelectedTab = infoTabPage;
+                tabControlMain.SelectedTab = tabPageInfo;
             }
         }
 
@@ -494,7 +498,7 @@ namespace log4jDigger
                     if (r.Contains(e.Location))
                     {
                         ContextMenu cm = new ContextMenu();
-                        if (tabControlMain.TabPages[i].Name == "tabPageInfo" && tabControlMain.TabPages[i] != infoTabPage)
+                        if (tabControlMain.TabPages[i].Name == "tabPageInfo" && tabControlMain.TabPages[i] != tabPageInfo)
                         {
                             MenuItem item = new MenuItem("Clear all Info Tabs");
                             item.Tag = "tabPageInfo";
@@ -519,7 +523,7 @@ namespace log4jDigger
             String clearString = ((MenuItem)sender).Tag as String;
             searchControlMain.ResetSearch();
             foreach (TabPage tp in tabControlMain.TabPages)
-                if (tp.Name == clearString && tp != infoTabPage)
+                if (tp.Name == clearString && tp != tabPageInfo)
                 {
                     tabControlMain.TabPages.Remove(tp);
                     tp.Dispose();

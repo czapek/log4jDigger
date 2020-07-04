@@ -436,6 +436,12 @@ namespace log4jDigger
                     {
                         kv.Value.Add(logPos);
                     }
+
+                    if(kv.Key.OnlyLinesWithStackTrace && logPos.Parent != null && kv.Value[kv.Value.Count - 1] != logPos.Parent
+                        && kv.Value[kv.Value.Count - 1] != logPos)
+                    {
+                        kv.Value.Add(logPos.Parent);
+                    }
                 }
             }
         }

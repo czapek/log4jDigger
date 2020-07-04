@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace log4jDigger
 {
-    public class LogPos
+    public class LogPos : IEquatable<LogPos>
     {
         public long Pos;
         public long Order;
@@ -13,6 +13,11 @@ namespace log4jDigger
         public LogSource LogSource;
         public List<LogPos> Childs;
         public LogPos Parent;
+
+        public bool Equals(LogPos other)
+        {
+            return this.TimeStamp == other.TimeStamp && this.Order == other.Order;
+        }
 
         public override string ToString()
         {
