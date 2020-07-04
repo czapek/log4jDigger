@@ -9,7 +9,7 @@ namespace log4jDigger.Controls
 {
     public partial class LogListControl : UserControl
     {
-        public event EventHandler DoubleClickListView;
+        public event EventHandler<ListViewControlEventArgs> DoubleClickListView;
         public event EventHandler SelectedIndexChangedListView;
         private SearchEventArgs searchEventArgs;
         private StreamingFactory streamingFactory;
@@ -17,6 +17,28 @@ namespace log4jDigger.Controls
         private delegate void SafeSetPositionList(List<LogPos> pl);
         private Object lockObject = new Object();
         List<LogPos> backupList;
+
+        public LogListControl()
+        {
+            InitializeComponent();
+
+            //workaround: VS Designer nach VS Update kaputt
+            contextMenuStripListView.Items.Add(new ToolStripSeparator());
+            ToolStripMenuItem bookmarkDoubleClickAltToolStripMenuItem = new ToolStripMenuItem();
+            bookmarkDoubleClickAltToolStripMenuItem.Name = "bookmarkDoubleClickAltToolStripMenuItem";
+            bookmarkDoubleClickAltToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            bookmarkDoubleClickAltToolStripMenuItem.Text = "Bookmark                             DoubleClick+Alt";
+            bookmarkDoubleClickAltToolStripMenuItem.Click += new System.EventHandler(this.bookmarkDoubleclickAltToolStripMenuItem_Click);
+            contextMenuStripListView.Items.Add(bookmarkDoubleClickAltToolStripMenuItem);
+
+            ToolStripMenuItem detailsDoubleClickToolStripMenuItem = new ToolStripMenuItem();
+            detailsDoubleClickToolStripMenuItem.Name = "bookmarkDoubleClickAltToolStripMenuItem";
+            detailsDoubleClickToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            detailsDoubleClickToolStripMenuItem.Text = "Show Details                             DoubleClick";
+            detailsDoubleClickToolStripMenuItem.Click += DetailsDoubleClickToolStripMenuItem_Click;
+            contextMenuStripListView.Items.Add(detailsDoubleClickToolStripMenuItem);
+        }
+
 
         public void SetStreamingFactory(StreamingFactory sf)
         {
@@ -43,7 +65,7 @@ namespace log4jDigger.Controls
         {
             LongCenterInfo = sea.ToString();
             searchEventArgs = sea;
-            SetPositionList(streamingFactory.GetSearchResult(sea));            
+            SetPositionList(streamingFactory.GetSearchResult(sea));
         }
 
         private void ItemF5_Click(object sender, EventArgs e)
@@ -187,7 +209,7 @@ namespace log4jDigger.Controls
         {
             if (streamingFactory == null)
                 return;
-            
+
             VirtualListSize = 0;
             ShortRightInfo = "";
             ShortLeftInfo = "";
@@ -199,7 +221,7 @@ namespace log4jDigger.Controls
             {
                 lock (lockObject)
                 {
-                    if (listViewLog.VirtualListSize != value)
+                    if (listViewLog != null && listViewLog.VirtualListSize != value)
                         listViewLog.SetVirtualListSize((int)value);
                 }
             }
@@ -271,16 +293,28 @@ namespace log4jDigger.Controls
             }
         }
 
-        public LogListControl()
-        {
-            InitializeComponent();
-        }
 
         private void listViewLog_DoubleClick(object sender, EventArgs e)
         {
             if (DoubleClickListView != null && backupList == null)
             {
-                DoubleClickListView.Invoke(this, EventArgs.Empty);
+                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = ModifierKeys.HasFlag(Keys.Alt) });
+            }
+        }
+
+        private void bookmarkDoubleclickAltToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DoubleClickListView != null && backupList == null)
+            {
+                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = true });
+            }
+        }
+
+        private void DetailsDoubleClickToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DoubleClickListView != null && backupList == null)
+            {
+                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = false });
             }
         }
 
@@ -566,5 +600,15 @@ namespace log4jDigger.Controls
 
             }
         }
+
+        private void bookmarkDoubleClickAltToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+
+        }
+    }
+
+    public class ListViewControlEventArgs : EventArgs
+    {
+        public bool Bookmark;
     }
 }

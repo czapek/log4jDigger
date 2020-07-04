@@ -237,7 +237,7 @@ namespace log4jDigger
             {
                 DisableForIndex();
                 RemoveTabs();
-                workerIndex.RunWorkerAsync(fileList);                
+                workerIndex.RunWorkerAsync(fileList);
             }
         }
 
@@ -266,7 +266,7 @@ namespace log4jDigger
             selectedLogListControl.ResetSetStreamingFactory();
 
             EnableForIndex();
-            AddInfoTabPage(-1);            
+            AddInfoTabPage(-1);
 
             if (reloadSearch)
                 foreach (TabPage tp in tabControlMain.TabPages)
@@ -366,11 +366,11 @@ namespace log4jDigger
             this.Cursor = Cursors.Default;
         }
 
-        private void AddInfoTabPage(int pos)
+        private TabPage AddInfoTabPage(int pos)
         {
             foreach (TabPage tp in tabControlMain.TabPages)
                 if (tp.Name == "tabPageInfo" && (pos == -1 || ((LoglineInfoControl)tp.Controls[0]).SelectedLine == pos))
-                    return;
+                    return tp;
 
             infoTabPage = new TabPage();
             infoControl = new LoglineInfoControl();
@@ -383,8 +383,8 @@ namespace log4jDigger
             infoTabPage.Text = "Details";
             infoTabPage.UseVisualStyleBackColor = true;
             tabControlMain.TabPages.Add(infoTabPage);
-            tabControlMain.SelectedTab = infoTabPage;
             SelectedIndexChanged(selectedLogListControl);
+            return infoTabPage;
         }
 
         private void InfoControl_SearchEvent(object sender, SearchEventArgs e)
@@ -399,18 +399,28 @@ namespace log4jDigger
             selectedLogListControl.SelectIndexVisible(lic.SelectedLine);
         }
 
-        private void listViewLog_DoubleClick(object sender, EventArgs e)
+        private void LogListControlMain_DoubleClickListView(object sender, ListViewControlEventArgs e)
         {
-            LogListControl llc = sender as LogListControl;
-            TabPage oldPage = infoTabPage;
-            AddInfoTabPage(llc.SelectedIndex);
-
-            if (oldPage != infoTabPage && oldPage != null)
+            if (e.Bookmark)
             {
-                oldPage.Text = $"Line {llc.SelectedIndex:n0}";
-                LoglineInfoControl llic = (LoglineInfoControl)oldPage.Controls[0];
-                llic.SelectedLine = llc.SelectedIndex;
-                llic.DoubleClickTextBox += InfoControl_DoubleClickTextBox;
+                LogListControl llc = sender as LogListControl;
+                TabPage oldPage = infoTabPage;
+                TabPage selectedPage = AddInfoTabPage(llc.SelectedIndex);
+
+                if (oldPage != infoTabPage && oldPage != null)
+                {
+                    oldPage.Text = $"Bookmark {llc.SelectedIndex:n0}";
+                    LoglineInfoControl llic = (LoglineInfoControl)oldPage.Controls[0];
+                    llic.SelectedLine = llc.SelectedIndex;
+                    llic.DoubleClickTextBox += InfoControl_DoubleClickTextBox;
+                    tabControlMain.SelectedTab = oldPage;
+                }
+                else
+                    tabControlMain.SelectedTab = selectedPage;
+            }
+            else
+            {
+                tabControlMain.SelectedTab = infoTabPage;
             }
         }
 
@@ -587,7 +597,7 @@ namespace log4jDigger
                 logfileBasketControl.IsIndexing = false;
             }
             else
-            {                
+            {
                 CreateIndex();
             }
         }

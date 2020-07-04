@@ -9,7 +9,7 @@ namespace log4jDigger
     public class LogUtils
     {
         public static List<String> LineMarkerFont = new List<string>() { "de.meona" };
-        private static List<String> logDirs = new List<string>() { @"var\log\meona", @"meona\log", @"meona\log\updatelog", @"\Users\sebas\Desktop\logs" };
+        private static List<String> logDirs = new List<string>() { @"var\log\meona", @"meona\log", @"meona\log\updatelog" };
         public static List<FileInfo> FindLatesLogfiles()
         {
             List<FileInfo> logFiles = new List<FileInfo>();

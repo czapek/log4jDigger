@@ -84,7 +84,7 @@ namespace log4jDigger
             this.logListControlMain.Size = new System.Drawing.Size(1233, 392);
             this.logListControlMain.TabIndex = 1;
             this.logListControlMain.VirtualListSize = ((long)(0));
-            this.logListControlMain.DoubleClickListView += new System.EventHandler(this.listViewLog_DoubleClick);
+            this.logListControlMain.DoubleClickListView += LogListControlMain_DoubleClickListView;
             this.logListControlMain.SelectedIndexChangedListView += new System.EventHandler(this.logListControlMain_SelectedIndexChangedListView);
             // 
             // tabControlMain
@@ -210,8 +210,10 @@ namespace log4jDigger
             this.tabPageJavaProcess.ResumeLayout(false);
             this.tabPageOptions.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
+
+
+    
 
         #endregion
         private System.Windows.Forms.SplitContainer splitContainer1;
