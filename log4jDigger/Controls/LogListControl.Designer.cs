@@ -1,4 +1,6 @@
-﻿namespace log4jDigger.Controls
+﻿using System.Drawing;
+
+namespace log4jDigger.Controls
 {
     partial class LogListControl
     {

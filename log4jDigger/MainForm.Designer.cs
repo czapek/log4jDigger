@@ -61,13 +61,13 @@ namespace log4jDigger
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.splitContainer1.SplitterWidth = 10;
-            this.splitContainer1.BackColor = Color.Silver;
+            this.splitContainer1.BackColor = Color.Goldenrod;
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             // 
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.logListControlMain);
-            this.splitContainer1.Panel1.BackColor = Color.White;
+            this.splitContainer1.Panel1.BackColor = Color.Gold;
             // 
             // splitContainer1.Panel2
             // 

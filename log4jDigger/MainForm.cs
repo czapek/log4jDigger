@@ -261,6 +261,7 @@ namespace log4jDigger
 
         private void WorkerIndex_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            this.Follow = wasFollowing || logfileBasketControl.ForceFollow;
             selectedLogListControl.ShortLeftInfo = $"{streamingFactory.PositionList.Count - 1:n0} lines";
             searchControlMain.StreamingFactory = streamingFactory;
             selectedLogListControl.ResetSetStreamingFactory();
