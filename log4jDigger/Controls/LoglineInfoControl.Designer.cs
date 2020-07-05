@@ -33,6 +33,7 @@
             this.contextMenuStripInfo = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.searchForSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copySelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.jumpToLineDoubleClickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripInfo.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,15 +54,16 @@
             // 
             this.contextMenuStripInfo.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.searchForSelectionToolStripMenuItem,
-            this.copySelectionToolStripMenuItem});
+            this.copySelectionToolStripMenuItem,
+            this.jumpToLineDoubleClickToolStripMenuItem});
             this.contextMenuStripInfo.Name = "contextMenuStripInfo";
-            this.contextMenuStripInfo.Size = new System.Drawing.Size(221, 70);
+            this.contextMenuStripInfo.Size = new System.Drawing.Size(264, 92);
             // 
             // searchForSelectionToolStripMenuItem
             // 
             this.searchForSelectionToolStripMenuItem.Name = "searchForSelectionToolStripMenuItem";
             this.searchForSelectionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.searchForSelectionToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.searchForSelectionToolStripMenuItem.Size = new System.Drawing.Size(263, 22);
             this.searchForSelectionToolStripMenuItem.Text = "Search for Selection";
             this.searchForSelectionToolStripMenuItem.Click += new System.EventHandler(this.searchForSelectionToolStripMenuItem_Click);
             // 
@@ -69,9 +71,16 @@
             // 
             this.copySelectionToolStripMenuItem.Name = "copySelectionToolStripMenuItem";
             this.copySelectionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copySelectionToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.copySelectionToolStripMenuItem.Size = new System.Drawing.Size(263, 22);
             this.copySelectionToolStripMenuItem.Text = "Copy Selection";
             this.copySelectionToolStripMenuItem.Click += new System.EventHandler(this.copySelectionToolStripMenuItem_Click);
+            // 
+            // jumpToLineDoubleClickToolStripMenuItem
+            // 
+            this.jumpToLineDoubleClickToolStripMenuItem.Name = "jumpToLineDoubleClickToolStripMenuItem";
+            this.jumpToLineDoubleClickToolStripMenuItem.Size = new System.Drawing.Size(263, 22);
+            this.jumpToLineDoubleClickToolStripMenuItem.Text = "Jump to Line                   DoubleClick";
+            this.jumpToLineDoubleClickToolStripMenuItem.Click += new System.EventHandler(this.jumpToLineDoubleClickToolStripMenuItem_Click);
             // 
             // LoglineInfoControl
             // 
@@ -91,5 +100,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStripInfo;
         private System.Windows.Forms.ToolStripMenuItem searchForSelectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copySelectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem jumpToLineDoubleClickToolStripMenuItem;
     }
 }

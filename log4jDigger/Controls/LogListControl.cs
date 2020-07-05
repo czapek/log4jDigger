@@ -29,17 +29,18 @@ namespace log4jDigger.Controls
             streamingFactory = sf;
             streamingFactory.NewPositions += StreamingFactory_NewPositions;
 
+            contextMenuStripListView.Items.Add(new ToolStripSeparator());
+
+            ToolStripMenuItem bookmarkMenuItem = new ToolStripMenuItem("Bookmark                               Ctrl+B");
+            bookmarkMenuItem.Click += new System.EventHandler(this.bookmarkMenuItem_Click);
+            contextMenuStripListView.Items.Add(bookmarkMenuItem);
+
+            ToolStripMenuItem detailsDoubleClickToolStripMenuItem = new ToolStripMenuItem("Show Details                             DoubleClick");
+            detailsDoubleClickToolStripMenuItem.Click += DetailsDoubleClickToolStripMenuItem_Click;
+            contextMenuStripListView.Items.Add(detailsDoubleClickToolStripMenuItem);
+
             if (sea == null)
             {
-                contextMenuStripListView.Items.Add(new ToolStripSeparator());
-                ToolStripMenuItem bookmarkDoubleClickAltToolStripMenuItem = new ToolStripMenuItem("Bookmark                             DoubleClick+Alt");
-                bookmarkDoubleClickAltToolStripMenuItem.Click += new System.EventHandler(this.bookmarkDoubleclickAltToolStripMenuItem_Click);
-                contextMenuStripListView.Items.Add(bookmarkDoubleClickAltToolStripMenuItem);
-
-                ToolStripMenuItem detailsDoubleClickToolStripMenuItem = new ToolStripMenuItem("Show Details                             DoubleClick");
-                detailsDoubleClickToolStripMenuItem.Click += DetailsDoubleClickToolStripMenuItem_Click;
-                contextMenuStripListView.Items.Add(detailsDoubleClickToolStripMenuItem);
-
                 contextMenuStripListView.Items.Add(new ToolStripSeparator());
                 
                 ToolStripMenuItem item = new ToolStripMenuItem("Toggle Follow       F");
@@ -189,9 +190,8 @@ namespace log4jDigger.Controls
                     follow = value;
                     if (follow && listViewLog.VirtualListSize > 0)
                         SelectIndexVisible((int)(listViewLog.VirtualListSize - 1));
-
-                    if (searchEventArgs == null)
-                        this.ShortRightInfo = follow ? "Follow on" : "Follow off";
+                           
+                    this.ShortRightInfo = follow ? "Follow on" : "Follow off";
                 }
             }
 
@@ -290,19 +290,28 @@ namespace log4jDigger.Controls
         }
 
 
+        private void ListViewLog_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.B && e.Modifiers == Keys.Control)
+            {
+                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = true, SearchEventArgs = searchEventArgs });
+            }
+        }
+
+
         private void listViewLog_DoubleClick(object sender, EventArgs e)
         {
             if (DoubleClickListView != null && backupList == null)
             {
-                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = ModifierKeys.HasFlag(Keys.Alt) });
+                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = false, SearchEventArgs = searchEventArgs });
             }
         }
 
-        private void bookmarkDoubleclickAltToolStripMenuItem_Click(object sender, EventArgs e)
+        private void bookmarkMenuItem_Click(object sender, EventArgs e)
         {
             if (DoubleClickListView != null && backupList == null)
             {
-                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = true });
+                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = true, SearchEventArgs = searchEventArgs });
             }
         }
 
@@ -310,7 +319,7 @@ namespace log4jDigger.Controls
         {
             if (DoubleClickListView != null && backupList == null)
             {
-                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = false });
+                DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = false, SearchEventArgs = searchEventArgs });
             }
         }
 
@@ -606,5 +615,6 @@ namespace log4jDigger.Controls
     public class ListViewControlEventArgs : EventArgs
     {
         public bool Bookmark;
+        public SearchEventArgs SearchEventArgs;
     }
 }

@@ -36,6 +36,12 @@ namespace log4jDigger.Controls
                 DoubleClickTextBox.Invoke(this, e);
         }
 
+        private void jumpToLineDoubleClickToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DoubleClickTextBox != null)
+                DoubleClickTextBox.Invoke(this, e);
+        }
+
         private void searchForSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SearchEvent != null && !String.IsNullOrWhiteSpace(richTextBoxInfo.SelectedText.Trim()))
@@ -57,6 +63,6 @@ namespace log4jDigger.Controls
             {
                 Clipboard.SetText(richTextBoxInfo.SelectedText.Trim());
             }
-        }
+        }  
     }
 }

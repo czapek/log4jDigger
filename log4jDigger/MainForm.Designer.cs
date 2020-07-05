@@ -1,4 +1,5 @@
 ﻿using log4jDigger.Controls;
+using System.Drawing;
 
 namespace log4jDigger
 {
@@ -59,10 +60,14 @@ namespace log4jDigger
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.splitContainer1.SplitterWidth = 10;
+            this.splitContainer1.BackColor = Color.Silver;
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             // 
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.logListControlMain);
+            this.splitContainer1.Panel1.BackColor = Color.White;
             // 
             // splitContainer1.Panel2
             // 
@@ -71,6 +76,7 @@ namespace log4jDigger
             this.splitContainer1.Size = new System.Drawing.Size(1233, 576);
             this.splitContainer1.SplitterDistance = 392;
             this.splitContainer1.TabIndex = 1;
+            this.splitContainer1.Panel2.BackColor = Color.White;
             // 
             // logListControlMain
             // 

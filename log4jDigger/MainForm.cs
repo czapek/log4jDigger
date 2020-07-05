@@ -192,7 +192,7 @@ namespace log4jDigger
 
         private void Clear()
         {
-            logListControlMain.Follow = false;
+            this.Follow = false;
             selectedLogListControl.Clear();
             if (workerIndex.IsBusy)
                 workerIndex.CancelAsync();
@@ -229,7 +229,7 @@ namespace log4jDigger
             if (workerIndex.IsBusy)
                 return;
 
-            logListControlMain.Follow = false;
+            this.Follow = false;
 
             List<String> fileList = logfileBasketControl.GetFilelistForIndexing();
 
@@ -273,7 +273,7 @@ namespace log4jDigger
                     if (tp.Name == "tabPageSearchResult")
                         ((LogListControl)tp.Controls[0]).Reload();
 
-            logListControlMain.Follow = wasFollowing || logfileBasketControl.ForceFollow;
+            this.Follow = wasFollowing || logfileBasketControl.ForceFollow;
 
             if (logfileBasketControl.ForceMaximize)
             {
@@ -353,7 +353,7 @@ namespace log4jDigger
                 
                 tp.Controls.Add(llc);
                 llc.Dock = DockStyle.Fill;
-                llc.DoubleClickListView += Llc_DoubleClickListView;
+                llc.DoubleClickListView += LogListControlMain_DoubleClickListView;
                 llc.Follow = logListControlMain.Follow;
                 tp.Name = "tabPageSearchResult";
                 tp.Padding = new System.Windows.Forms.Padding(3);
@@ -405,9 +405,16 @@ namespace log4jDigger
 
         private void LogListControlMain_DoubleClickListView(object sender, ListViewControlEventArgs e)
         {
-            if (e.Bookmark)
+            LogListControl llc = sender as LogListControl;
+            if (e.SearchEventArgs != null)
             {
-                LogListControl llc = sender as LogListControl;
+                LogPos lp = llc.SelectedLogPos;
+                if (lp != null)
+                    JumpToLine((int)lp.Order);
+            }
+
+            if (e.Bookmark)
+            {                
                 TabPage oldPage = tabPageInfo;
                 TabPage selectedPage = AddInfoTabPage(llc.SelectedIndex);
 
@@ -480,14 +487,6 @@ namespace log4jDigger
             isFromSearchControl = false;
         }
 
-        private void Llc_DoubleClickListView(object sender, EventArgs e)
-        {
-            LogListControl lc = sender as LogListControl;
-            LogPos lp = lc.SelectedLogPos;
-            if (lp != null)
-                JumpToLine((int)lp.Order);
-        }
-
         private void tabControlMain_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
@@ -530,6 +529,17 @@ namespace log4jDigger
                 }
         }
 
+        private bool Follow
+        {
+            set
+            {
+                logListControlMain.Follow = value;
+                foreach (TabPage tp in tabControlMain.TabPages)
+                    if (tp.Name == "tabPageSearchResult")
+                        ((LogListControl)tp.Controls[0]).Follow = logListControlMain.Follow;
+            }
+        }
+
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F)
@@ -541,10 +551,7 @@ namespace log4jDigger
                 }
                 else
                 {
-                    logListControlMain.Follow = !logListControlMain.Follow;
-                    foreach (TabPage tp in tabControlMain.TabPages)
-                        if (tp.Name == "tabPageSearchResult")
-                            ((LogListControl)tp.Controls[0]).Follow = logListControlMain.Follow;
+                    this.Follow = !logListControlMain.Follow;   
                 }
             }
             else if (e.KeyCode == Keys.F5)

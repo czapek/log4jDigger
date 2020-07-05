@@ -177,6 +177,7 @@
             this.listViewLog.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listViewLog_RetrieveVirtualItem);
             this.listViewLog.SelectedIndexChanged += new System.EventHandler(this.listViewLog_SelectedIndexChanged);
             this.listViewLog.DoubleClick += new System.EventHandler(this.listViewLog_DoubleClick);
+            this.listViewLog.KeyDown += ListViewLog_KeyDown;
             // 
             // columnHeaderTime
             // 
