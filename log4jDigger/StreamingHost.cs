@@ -21,7 +21,7 @@ namespace log4jDigger
         {
             Filename = filename;
             Stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            Reader = new StreamReader(Stream, Encoding.Default);
+            Reader = new StreamReader(Stream, Encoding.UTF8);
         }
 
         public void SetLastMaxPosition(LogPos logPos)

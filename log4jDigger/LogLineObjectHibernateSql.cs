@@ -75,7 +75,8 @@ namespace log4jDigger
             LoglineObject? sqlLine = hibernateSqlDic.Values.FirstOrDefault(x => x.Classname == "org.hibernate.SQL");
             if (sqlLine != null && !String.IsNullOrWhiteSpace(sqlLine.Value.Message))
             {
-                var basicBinders = hibernateSqlDic.Values.Where(x => x.Classname == "org.hibernate.type.descriptor.sql.BasicBinder");
+                var basicBinders = hibernateSqlDic.Values.Where(x => 
+                (x.Classname == "org.hibernate.type.descriptor.sql.BasicBinder" || x.Classname == "org.hibernate.type.EnumType") && x.Message.ToLower().StartsWith("binding"));
                 List<HqlParameter> parameters = basicBinders.Select(x => new HqlParameter(x)).Where(x => x.ParameterPos > 0).ToList();
                 String[] parts = sqlLine.Value.Message.Split('?');
                 for (int i = 0; i < parts.Length; i++)
@@ -99,14 +100,14 @@ namespace log4jDigger
                 messageResult = String.Join(Environment.NewLine, hibernateSqlDic.OrderBy(x => x.Key).Select(x => x.Value.Message));
             }
             
-            return messageResult.Replace(") values (", ") \r\n    values (")
+            return messageResult.Replace(") values (", "\r\n) values (")
                 .Replace(" where ", " \r\n    where ")
                 .Replace(" from ", " \r\n    from ");
         }
 
         class HqlParameter
         {
-            Regex expression = new Regex(@"\[\w*\]", RegexOptions.Compiled);
+            Regex expression = new Regex(@"\[[^\[\[]*\]", RegexOptions.Compiled);
             CultureInfo culture = new CultureInfo("en-US");
             public int ParameterPos;
             public String SqlType;
@@ -115,17 +116,21 @@ namespace log4jDigger
 
             public HqlParameter(LoglineObject loglineObject)
             {
-                if (loglineObject.Message.Contains("79"))
+                MatchCollection mc = expression.Matches(loglineObject.Message);
+                if (mc.Count >= 2)
                 {
-
-                }
-                Regex expression2 = new Regex(@"\[[^\[\[]*\]", RegexOptions.Compiled);
-                MatchCollection mc = expression2.Matches(loglineObject.Message);
-                if (mc.Count == 3)
-                {
-                    ParameterPos = Int32.Parse(mc[0].Value.Trim("[]".ToCharArray()));
-                    SqlType = mc[1].Value.Trim("[]".ToCharArray());
-                    ParameterValue = mc[2].Value.Trim("[]".ToCharArray());
+                    if (mc.Count == 3)
+                    {
+                        ParameterPos = Int32.Parse(mc[0].Value.Trim("[]".ToCharArray()));
+                        SqlType = mc[1].Value.Trim("[]".ToCharArray());
+                        ParameterValue = mc[2].Value.Trim("[]".ToCharArray());
+                    }
+                    else
+                    {
+                        ParameterValue = mc[0].Value.Trim("[]".ToCharArray());
+                        ParameterPos = Int32.Parse(mc[1].Value.Trim("[]".ToCharArray()));
+                        SqlType = "VARCHAR";
+                    }
 
                     if (ParameterValue == "null")
                     {
@@ -140,7 +145,7 @@ namespace log4jDigger
                         DateTime date;
                         if (DateTime.TryParseExact(ParameterValue, "ddd MMM dd HH:mm:ss CET yyyy", culture, DateTimeStyles.None, out date))
                         {
-                            if (SqlType == "TIMESTAMP")
+                            if (SqlType == "DATE")
                                 Sql = "'" + date.ToString("yyyy-MM-dd") + "'";
                             else
                                 Sql = "'" + date.ToString("yyyy-MM-dd HH:mm:ss") + "'";
