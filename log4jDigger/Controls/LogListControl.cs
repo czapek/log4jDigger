@@ -10,6 +10,7 @@ namespace log4jDigger.Controls
     public partial class LogListControl : UserControl
     {
         public event EventHandler<ListViewControlEventArgs> DoubleClickListView;
+        public event EventHandler ClickListView;
         public event EventHandler SelectedIndexChangedListView;
         private SearchEventArgs searchEventArgs;
         private StreamingFactory streamingFactory;
@@ -42,14 +43,14 @@ namespace log4jDigger.Controls
             if (sea == null)
             {
                 contextMenuStripListView.Items.Add(new ToolStripSeparator());
-                
+
                 ToolStripMenuItem item = new ToolStripMenuItem("Toggle Follow       F");
                 item.Click += Item_Click;
                 contextMenuStripListView.Items.Add(item);
 
                 ToolStripMenuItem itemF5 = new ToolStripMenuItem("Reload       F5");
                 itemF5.Click += ItemF5_Click;
-                contextMenuStripListView.Items.Add(itemF5);   
+                contextMenuStripListView.Items.Add(itemF5);
             }
             else
             {
@@ -190,7 +191,7 @@ namespace log4jDigger.Controls
                     follow = value;
                     if (follow && listViewLog.VirtualListSize > 0)
                         SelectIndexVisible((int)(listViewLog.VirtualListSize - 1));
-                           
+
                     this.ShortRightInfo = follow ? "Follow on" : "Follow off";
                 }
             }
@@ -292,7 +293,7 @@ namespace log4jDigger.Controls
 
         private void ListViewLog_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.B && e.Modifiers == Keys.Control)
+            if (e.KeyCode == Keys.B && e.Modifiers == Keys.Control)
             {
                 DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = true, SearchEventArgs = searchEventArgs });
             }
@@ -304,6 +305,14 @@ namespace log4jDigger.Controls
             if (DoubleClickListView != null && backupList == null)
             {
                 DoubleClickListView.Invoke(this, new ListViewControlEventArgs() { Bookmark = false, SearchEventArgs = searchEventArgs });
+            }
+        }
+
+        private void ListViewLog_Click(object sender, System.EventArgs e)
+        {
+            if (ClickListView != null)
+            {
+                ClickListView.Invoke(this, EventArgs.Empty);
             }
         }
 

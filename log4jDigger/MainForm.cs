@@ -404,9 +404,16 @@ namespace log4jDigger
             selectedLogListControl.SelectIndexVisible(lic.SelectedLine);
         }
 
+        private void LogListControlMain_Click(object sender, System.EventArgs e)
+        {
+            Follow = false;
+        }
+
         private void LogListControlMain_DoubleClickListView(object sender, ListViewControlEventArgs e)
         {
             LogListControl llc = sender as LogListControl;
+            Follow = false;
+
             if (e.SearchEventArgs != null)
             {
                 LogPos lp = llc.SelectedLogPos;

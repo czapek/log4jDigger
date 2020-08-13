@@ -91,6 +91,7 @@ namespace log4jDigger
             this.logListControlMain.TabIndex = 1;
             this.logListControlMain.VirtualListSize = ((long)(0));
             this.logListControlMain.DoubleClickListView += LogListControlMain_DoubleClickListView;
+            this.logListControlMain.ClickListView += LogListControlMain_Click;
             this.logListControlMain.SelectedIndexChangedListView += new System.EventHandler(this.logListControlMain_SelectedIndexChangedListView);
             // 
             // tabControlMain
@@ -217,9 +218,6 @@ namespace log4jDigger
             this.tabPageOptions.ResumeLayout(false);
             this.ResumeLayout(false);
         }
-
-
-    
 
         #endregion
         private System.Windows.Forms.SplitContainer splitContainer1;

@@ -232,6 +232,8 @@ namespace log4jDigger.Controls
             {
                 listViewBasket.CheckedItems[index].SubItems[BasketStateCol].Text = "indexing ... " + rel + "%";
                 listViewBasket.CheckedItems[index].EnsureVisible();
+                if (listViewBasket.CheckedItems[index].Index + 1 < listViewBasket.Items.Count)
+                    listViewBasket.RedrawItems(listViewBasket.CheckedItems[index].Index, listViewBasket.CheckedItems[index].Index + 1, false);
             }
 
             if (index > 0 && listViewBasket.CheckedItems.Count >= index)

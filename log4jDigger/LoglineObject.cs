@@ -135,7 +135,7 @@ namespace log4jDigger
                     messageResult = LogLineObjectStatementLoggerSql.Info(streamingFactory, index, loglineObject);
                 }
 
-                sb.AppendLine($"{loglineObject.Timestamp} {loglineObject.Level}\r\n{loglineObject.Threadname}\r\n{loglineObject.Classname}\r\n{messageResult}");
+                sb.AppendLine($"{loglineObject.Timestamp} {loglineObject.Level}\r\n{loglineObject.Threadname}\r\n{loglineObject.Classname}\r\n\r\n{messageResult}");
             }
             else if (logPos.LoglineType == LoglineType.CATALINA_LOG)
             {
@@ -153,6 +153,10 @@ namespace log4jDigger
                     sb.AppendLine("    " + LoglineObject.ReadLine(lp));
                 }
             }
+
+            sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine(logPos.LogSource.Filename);
 
             infoTextBox.Text = sb.ToString();
             int lineCounter = 0;
